@@ -1,28 +1,9 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# Visual Studio
+.vs
+bin
+obj
 
-/WebApiFundamentals/.cr/personal/FavoritesList/List.xml
-/WebApiFundamentals/.vs/WebApiFundamentals/v17/.futdcache.v2
-/WebApiFundamentals/.vs/WebApiFundamentals/v17
-/WebApiFundamentals/.vs/WebApiFundamentals/FileContentIndex/b6126632-c551-49fe-a4a5-63ed55bbac6e.vsidx
-/WebApiFundamentals/.vs/WebApiFundamentals/FileContentIndex/46ad6a95-0266-49f6-a64f-8c8c3f7c77bb.vsidx
-/WebApiFundamentals/.vs/WebApiFundamentals/FileContentIndex/0a43ed08-001b-4781-88fc-4558d020a411.vsidx
-/WebApiFundamentals/.vs/WebApiFundamentals/FileContentIndex
-/WebApiFundamentals/.vs/WebApiFundamentals
-/WebApiFundamentals/.vs/ProjectEvaluation/webapifundamentals.projects.v6.1
-/WebApiFundamentals/.vs/ProjectEvaluation/webapifundamentals.metadata.v6.1
-/WebApiFundamentals/.vs/WebApiFundamentals/DesignTimeBuild/.dtbcache.v2
-/WebApiFundamentals/obj/WebApiFundamentals.csproj.nuget.g.props
-/WebApiFundamentals/obj/WebApiFundamentals.csproj.nuget.dgspec.json
-/WebApiFundamentals/obj/project.nuget.cache
-/WebApiFundamentals/obj/project.assets.json
-/WebApiFundamentals/obj/Debug/net6.0/WebApiFundamentals.pdb
-/WebApiFundamentals/obj/Debug/net6.0/WebApiFundamentals.dll
-/WebApiFundamentals/obj/Debug/net6.0/WebApiFundamentals.csproj.AssemblyReference.cache
-/WebApiFundamentals/obj/Debug/net6.0/WebApiFundamentals.assets.cache
-/WebApiFundamentals/obj/Debug/net6.0/refint/WebApiFundamentals.dll
-/WebApiFundamentals/bin/Debug/net6.0/WebApiFundamentals.pdb
-/WebApiFundamentals/bin/Debug/net6.0/WebApiFundamentals.dll
-/WebApiFundamentals/obj/Debug/net6.0/ref/WebApiFundamentals.dll
-/WebApiFundamentals/.vs/WebApiFundamentals/v17/.suo
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
