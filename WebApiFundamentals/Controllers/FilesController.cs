@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace WebApiFundamentals.Controllers
 {
     [Route("api/files")]
     [ApiController]
-    public class FilesController : ControllerBase
+    public class FilesController(FileExtensionContentTypeProvider fileExtensionContentTypeProvider)
+        : ControllerBase
     {
-        private readonly FileExtensionContentTypeProvider _fileExtensionContentTypeProvider;
-
-        public FilesController(FileExtensionContentTypeProvider fileExtensionContentTypeProvider)
-        {
-            _fileExtensionContentTypeProvider = fileExtensionContentTypeProvider ??
-                throw new ArgumentNullException(nameof(fileExtensionContentTypeProvider));
-        }
+        private readonly FileExtensionContentTypeProvider _fileExtensionContentTypeProvider =
+            fileExtensionContentTypeProvider ??
+            throw new ArgumentNullException(nameof(fileExtensionContentTypeProvider));
 
         [HttpGet("{fileId}")]
         public ActionResult GetFile(string fileId)

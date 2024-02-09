@@ -4,7 +4,7 @@ using WebApiFundamentals.Models;
 
 namespace WebApiFundamentals.Controllers
 {
-    [Route("api/cities/{cityId}/pointsofinterest")]
+    [Route("api/cities/{cityId:int}/pointsofinterest")]
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
@@ -42,7 +42,7 @@ namespace WebApiFundamentals.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PointOfInterestDto> CreatePointOfInerest(int cityId, PointOfInterestForCreationDto pointOfInterest)
+        public ActionResult<PointOfInterestDto> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
         {
             var city = CitiesDataStore.Current.Cities.Find(c => c.Id == cityId);
             if (city == null)
