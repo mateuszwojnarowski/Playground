@@ -1,9 +1,8 @@
-﻿namespace WebApiFundamentals.Models
+﻿namespace WebApiFundamentals.Models;
+
+public class PointOfInterestDto
 {
-    public class PointOfInterestDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string? Description { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
 }
