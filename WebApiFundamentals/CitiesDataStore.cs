@@ -72,5 +72,5 @@ public class CitiesDataStore
         }
     ];
 
-    public static CitiesDataStore Current { get; } = new();
+    //public static CitiesDataStore Current { get; } = new();
 }
