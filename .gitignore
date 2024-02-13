@@ -3,6 +3,7 @@
 .idea
 bin
 obj
+logs
 
 *.suo
 *.user
