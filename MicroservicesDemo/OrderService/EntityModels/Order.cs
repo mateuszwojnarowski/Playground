@@ -8,6 +8,7 @@ namespace OrderService.EntityModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        [Required]
+        public IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }

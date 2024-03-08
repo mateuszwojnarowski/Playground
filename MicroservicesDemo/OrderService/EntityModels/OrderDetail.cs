@@ -8,13 +8,12 @@ namespace OrderService.EntityModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        [Required, ForeignKey("Order")]
+        [ForeignKey("Order")]
         public Guid OrderId { get; set; }
         [Required]
         public Guid ProductId { get; set; }
         [Required]
         public int Quantity { get; set; }
-        [Required]
         public decimal SoldAtUnitPrice { get; set; }
     }
 }
