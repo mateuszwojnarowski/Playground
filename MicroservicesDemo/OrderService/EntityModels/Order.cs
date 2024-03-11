@@ -9,6 +9,6 @@ namespace OrderService.EntityModels
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
-        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public IEnumerable<OrderItem> OrderDetails { get; set; }
     }
 }

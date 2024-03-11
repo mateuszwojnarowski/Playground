@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using OrderService.ContractModels;
 using OrderService.Data;
 using OrderService.EntityModels;
 
@@ -27,7 +25,7 @@ namespace OrderService.Controllers
         }
 
         [HttpGet("{id}/OrderDetails")]
-        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderDetails(Guid id)
+        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrderDetails(Guid id)
         {
             var order = await _context.Orders.Include(x => x.OrderDetails).FirstOrDefaultAsync(x => x.Id == id);
 
@@ -60,9 +58,9 @@ namespace OrderService.Controllers
         {
             // get product details including price from ProductService
             // fill the order details
-            var response = await HttpClient.GetAsync("http://localhost:5048/Products");
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var products = JsonConvert.DeserializeObject<List<Product>>(responseBody);
+            //var response = await HttpClient.GetAsync("http://localhost:5048/Products");
+            //var responseBody = await response.Content.ReadAsStringAsync();
+            //var products = JsonConvert.DeserializeObject<List<Product>>(responseBody);
 
             //move the product to shared libary of sorts
 

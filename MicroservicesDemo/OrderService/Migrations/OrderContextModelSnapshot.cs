@@ -33,7 +33,7 @@ namespace OrderService.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("OrderService.EntityModels.OrderDetail", b =>
+            modelBuilder.Entity("OrderService.EntityModels.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace OrderService.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("OrderService.EntityModels.OrderDetail", b =>
+            modelBuilder.Entity("OrderService.EntityModels.OrderItem", b =>
                 {
                     b.HasOne("OrderService.EntityModels.Order", null)
                         .WithMany("OrderDetails")

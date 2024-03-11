@@ -6,6 +6,6 @@ namespace OrderService.Data
     public class OrderContext(DbContextOptions<OrderContext> options) : DbContext(options)
     {
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderItem> OrderDetails { get; set; }
     }
 }
