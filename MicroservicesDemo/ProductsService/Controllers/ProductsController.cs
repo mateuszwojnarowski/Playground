@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProductsService.Contracts;
 using ProductsService.Data;
 using ProductsService.Models;
 
@@ -35,17 +37,19 @@ namespace ProductsService.Controllers
             return product;
         }
 
-        [HttpPut("{id}/stock")]
-        public async Task<IActionResult> UpdateStock(Guid id, int stock)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchProduct(Guid id, JsonPatchDocument<Product> patchDocument)
         {
-            var product = await _context.Products.FindAsync(id);
+            var existingProduct = await _context.Products.FindAsync(id);
 
-            if (product == null)
+            if (existingProduct == null)
             {
                 return NotFound();
             }
 
-            product.StockQuantity = stock;
+            //add some extra work here in a separate class to support simple things like stock,name,description,price
+
+            patchDocument.ApplyTo(existingProduct);
 
             await _context.SaveChangesAsync();
 
