@@ -1,0 +1,29 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/orders/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5241
+        }
+      ],
+      "UpstreamPathTemplate": "/api/orders/{everything}"
+    },
+    {
+      "DownstreamPathTemplate": "/products/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5048
+        }
+      ],
+      "UpstreamPathTemplate": "/api/products/{everything}",
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5071"
+  }
+}

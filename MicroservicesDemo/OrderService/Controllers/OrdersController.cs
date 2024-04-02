@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OrderService.Data;
 using OrderService.EntityModels;
+using SharedModels.Models;
 
 namespace OrderService.Controllers
 {
@@ -10,7 +12,6 @@ namespace OrderService.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly OrderContext _context;
-        private static readonly HttpClient HttpClient = new();
 
         public OrdersController(OrderContext context)
         {
@@ -56,22 +57,34 @@ namespace OrderService.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            // get product details including price from ProductService
-            // fill the order details
-            //var response = await HttpClient.GetAsync("http://localhost:5048/Products");
-            //var responseBody = await response.Content.ReadAsStringAsync();
-            //var products = JsonConvert.DeserializeObject<List<Product>>(responseBody);
+            using var httpClient = new HttpClient()
+            {
+                BaseAddress = new
+                    Uri("http://localhost:5071/api/")
+            };
 
-            //move the product to shared libary of sorts
+            var response = await httpClient.GetAsync("products");
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            List<Product> models;
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                models = JsonConvert.DeserializeObject<List<Product>>(json);
+            }
 
-            //after save changes succesfully, connect to Products to remove desired quantity from stock
 
-            //var response = await httpClient.PostAsync("http://localhost:5048/Products");
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            // get products from products service 
+            // check if they're in stock and stock is able to fulfill the order;
+
+            // patch to products service with updated stock
+            // if succeeded can add order and save changes
+
+            //_context.Orders.Add(order);
+            //await _context.SaveChangesAsync();
+
+            return NoContent();
+            //return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
 
         // DELETE: api/Orders/5

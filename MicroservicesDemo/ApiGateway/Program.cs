@@ -1,18 +1,17 @@
-using Microsoft.EntityFrameworkCore;
-using ProductsService.Data;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddNewtonsoftJson();
-
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddOcelot();
 
-builder.Services.AddDbContext<ProductContext>(
-    dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:ProductDB"]));
+builder.Configuration.AddJsonFile("ocelot.json");
 
 var app = builder.Build();
 
@@ -28,5 +27,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseOcelot().Wait();
 app.Run();
