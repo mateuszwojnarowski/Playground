@@ -1,9 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using System.Runtime.CompilerServices;
+using System.Text;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OrderService.Data;
 using OrderService.EntityModels;
+using ProductsService.Models;
 using SharedModels.Models;
+using Exception = System.Exception;
 
 namespace OrderService.Controllers
 {
@@ -65,14 +72,46 @@ namespace OrderService.Controllers
 
             var response = await httpClient.GetAsync("products");
 
-            List<Product> models;
+            List<Product>? products = [];
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                models = JsonConvert.DeserializeObject<List<Product>>(json);
+                products = JsonConvert.DeserializeObject<List<Product>>(json);
+            }
+
+            var orderedProducts = products?.Where(x => order.OrderDetails.Any(y => y.ProductId == x.Id))
+                .Select(x => new ProductsPatch { Id = x.Id, Stock = x.StockQuantity }).ToArray();
+
+            if (orderedProducts is null or [] || order.OrderDetails.Count() > orderedProducts.Length)
+            {
+                return BadRequest("Could not find all ordered products.");
+            }
+
+            var patchDoc = new JsonPatchDocument();
+
+            foreach (var orderedProduct in orderedProducts)
+            {
+                orderedProduct.Stock -= order.OrderDetails.Single(x => x.ProductId == orderedProduct.Id).Quantity;
+                if (orderedProduct.Stock < 0)
+                {
+                    return BadRequest($"Not enough stock of {orderedProduct}");
+                }
+
+                var index = products.FindIndex(x => x.Id == orderedProduct.Id);
+                patchDoc.Replace($"/{index}", orderedProduct);
             }
 
 
+            response = await httpClient.PatchAsync("products",
+                new StringContent(JsonConvert.SerializeObject(patchDoc), Encoding.UTF8, "application/json"));
+
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            }
 
             // get products from products service 
             // check if they're in stock and stock is able to fulfill the order;
@@ -80,11 +119,7 @@ namespace OrderService.Controllers
             // patch to products service with updated stock
             // if succeeded can add order and save changes
 
-            //_context.Orders.Add(order);
-            //await _context.SaveChangesAsync();
-
-            return NoContent();
-            //return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            return BadRequest();
         }
 
         // DELETE: api/Orders/5
