@@ -72,7 +72,7 @@ namespace OrderService.Controllers
 
             var response = await httpClient.GetAsync("products");
 
-            List<Product>? products = [];
+            List<Product>? products = null;
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -112,12 +112,6 @@ namespace OrderService.Controllers
 
                 return CreatedAtAction("GetOrder", new { id = order.Id }, order);
             }
-
-            // get products from products service 
-            // check if they're in stock and stock is able to fulfill the order;
-
-            // patch to products service with updated stock
-            // if succeeded can add order and save changes
 
             return BadRequest();
         }
