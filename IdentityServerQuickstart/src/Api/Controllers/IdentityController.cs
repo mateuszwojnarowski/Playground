@@ -23,5 +23,12 @@ namespace Api.Controllers
             var userClaims = User.Claims.Select(c => new { c.Type, c.Value });
             return Ok(userClaims);
         }
+
+        [HttpGet("test")]
+        public IActionResult GetTest()
+        {
+            _logger.Warning("Test endpoint hit!");
+            return Ok("dupa");
+        }
     }
 }
