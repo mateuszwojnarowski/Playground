@@ -1,6 +1,17 @@
 @Api_HostAddress = https://localhost:7219
+@IDS_HostAddress = https://localhost:5001
+@ClientId = client1
+@ClientSecret = secret
+@Scope = api1
 
 GET {{Api_HostAddress}}/identity/
 Accept: application/json
 
 ###
+
+GET {{IDS_HostAddress}}/connect/token
+Accept: application/json
+
+client_id={{ClientId}}&client_secret={{ClientSecret}}&grant_type=client_credentials&scope={{Scope}}
+
+> {% client.global.set("Token", response.body.access_token) %}

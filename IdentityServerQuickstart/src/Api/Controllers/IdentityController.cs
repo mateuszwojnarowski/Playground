@@ -16,10 +16,10 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize("ApiScope")]
         public IActionResult GetUserClaims()
         {
-            _logger.Information("Endpoint hit!");
+            _logger.Warning("Endpoint hit!");
             var userClaims = User.Claims.Select(c => new { c.Type, c.Value });
             return Ok(userClaims);
         }

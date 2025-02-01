@@ -20,6 +20,12 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "api1");
     });
+
+    options.AddPolicy("ApiScope2", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "api2");
+    });
 });
 
 builder.Services.AddAuthorization();
