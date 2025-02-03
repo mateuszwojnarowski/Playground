@@ -56,6 +56,8 @@ internal static class HostingExtensions
         return app;
     }
 
+    //test
+
     private static void InitializeDatabase(IApplicationBuilder app)
     {
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope();
