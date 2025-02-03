@@ -28,8 +28,6 @@ internal static class HostingExtensions
             })
             .AddTestUsers(TestUsers.Users);
 
-        //test
-
         return builder.Build();
     }
 
