@@ -2,22 +2,22 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/orders/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5241
+          "Port": 7117
         }
       ],
       "UpstreamPathTemplate": "/api/orders/{everything}"
     },
     {
       "DownstreamPathTemplate": "/products/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5048
+          "Port": 7228
         }
       ],
       "UpstreamPathTemplate": "/api/products/{everything}",
