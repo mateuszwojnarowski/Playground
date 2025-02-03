@@ -61,7 +61,6 @@ internal static class HostingExtensions
         var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
         context.Database.Migrate();
 
-        // uncomment if creating the db for the first time
         if (!context.Clients.Any())
         {
             foreach (var client in Config.Clients)

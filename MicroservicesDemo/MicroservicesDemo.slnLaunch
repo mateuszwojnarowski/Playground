@@ -1,6 +1,6 @@
 [
   {
-    "Name": "New Profile",
+    "Name": "Start All",
     "Projects": [
       {
         "Path": "ProductsService\\ProductsService.csproj",
@@ -16,6 +16,11 @@
         "Path": "ApiGateway\\ApiGateway.csproj",
         "Action": "Start",
         "DebugTarget": "https"
+      },
+      {
+        "Path": "IdentityServer\\IdentityServer.csproj",
+        "Action": "Start",
+        "DebugTarget": "SelfHost"
       }
     ]
   }

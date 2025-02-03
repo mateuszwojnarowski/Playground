@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "b3a1b15c-4ca9-4c90-96ea-f6fd92d03959",
+		"name": "Microservices project collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4941423"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get Products",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    \r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/products/a0fa5a1f-fc38-4491-90da-2b04ea7bd679",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products",
+								"a0fa5a1f-fc38-4491-90da-2b04ea7bd679"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/products",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Product Stock Quantity",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/products/4da17cfc-2239-460c-8e12-08dd44a04b8f/100",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products",
+								"4da17cfc-2239-460c-8e12-08dd44a04b8f",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/products/A0FA5A1F-FC38-4491-90DA-2B04EA7BD679",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products",
+								"A0FA5A1F-FC38-4491-90DA-2B04EA7BD679"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders/4da17cfc-2239-460c-8e12-08dd44a04b8f",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders",
+								"4da17cfc-2239-460c-8e12-08dd44a04b8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"OrderDetails\": [\r\n        {\r\n            \"ProductId\": \"7223634c-c992-4967-9cda-4cb4192f0a2e\",\r\n            \"Quantity\": 10,\r\n            \"SoldAtUnitPrice\": 10\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders/e36accf0-393e-446c-3f1e-08dd44a165ae",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders",
+								"e36accf0-393e-446c-3f1e-08dd44a165ae"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "order.view order.edit product.view product.edit",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "client",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenName",
+						"value": "Bearer",
+						"type": "string"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "authorization_code_with_pkce",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "secret",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://localhost:5001/connect/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://localhost:5001/connect/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Products",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    \r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/products/a0fa5a1f-fc38-4491-90da-2b04ea7bd679",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products",
+								"a0fa5a1f-fc38-4491-90da-2b04ea7bd679"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders/4da17cfc-2239-460c-8e12-08dd44a04b8f",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders",
+								"4da17cfc-2239-460c-8e12-08dd44a04b8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"OrderDetails\": [\r\n        {\r\n            \"ProductId\": \"7223634c-c992-4967-9cda-4cb4192f0a2e\",\r\n            \"Quantity\": 10,\r\n            \"SoldAtUnitPrice\": 10\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7290/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/orders/e36accf0-393e-446c-3f1e-08dd44a165ae",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"orders",
+								"e36accf0-393e-446c-3f1e-08dd44a165ae"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "order.view order.edit product.view",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenName",
+						"value": "Bearer",
+						"type": "string"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://127.0.0.1",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "authorization_code_with_pkce",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "secret",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "client2",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://localhost:5001/connect/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://localhost:5001/connect/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}

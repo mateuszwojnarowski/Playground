@@ -19,5 +19,5 @@ public class Product
     public decimal Cost { get; set; }
 
     [Required]
-    public double StockQuantity { get; set; }
+    public long StockQuantity { get; set; }
 }

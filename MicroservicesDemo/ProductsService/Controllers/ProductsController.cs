@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductsService.Data;
 using Microsoft.AspNetCore.JsonPatch;
 using SharedModels.Models;
+using System.Net;
 
 namespace ProductsService.Controllers;
 
@@ -13,12 +15,14 @@ public class ProductsController(ProductContext context) : ControllerBase
     private readonly ProductContext _context = context;
 
     [HttpGet]
+    [Authorize("Product View")]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
         return await _context.Products.ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [Authorize("Product View")]
     public async Task<ActionResult<Product>> GetProduct(Guid id)
     {
         var product = await _context.Products.FindAsync(id);
@@ -31,25 +35,28 @@ public class ProductsController(ProductContext context) : ControllerBase
         return product;
     }
 
-    [HttpPatch]
-    public async Task<IActionResult> Patch([FromBody] JsonPatchDocument<List<ProductsPatch>> productsPatch)
+    [HttpPut("{id}/{stockQuantity}")]
+    [Authorize("Product Edit")]
+    public async Task<IActionResult> Patch(Guid id, long stockQuantity)
     {
-        var products = _context.Products;
+        var product = await _context.Products.FindAsync(id);
 
-        var updatedProducts =
-            _context.Products.Select(x => new ProductsPatch { Id = x.Id, Stock = x.StockQuantity }).ToList();
-
-        productsPatch.ApplyTo(updatedProducts);
-
-        foreach (var product in products)
+        if (product is null)
         {
-            var updatedProduct = updatedProducts.SingleOrDefault(x => x.Id == product.Id);
-
-            if (updatedProduct is not null)
-            {
-                product.StockQuantity = updatedProduct.Stock;
-            }
+            return NotFound($"Could not find a product with id of {id}");
         }
+
+        if (product.StockQuantity == stockQuantity)
+        {
+            return StatusCode((int)HttpStatusCode.NotModified);
+        }
+
+        if (stockQuantity < 0)
+        {
+            return BadRequest("Stock quantity cannot be negative");
+        }
+
+        product.StockQuantity = stockQuantity;
 
         await _context.SaveChangesAsync();
 
@@ -59,6 +66,7 @@ public class ProductsController(ProductContext context) : ControllerBase
     // POST: api/Products
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Authorize("Product Edit")]
     public async Task<ActionResult<Product>> PostProduct(Product product)
     {
         _context.Products.Add(product);
@@ -69,6 +77,7 @@ public class ProductsController(ProductContext context) : ControllerBase
 
     // DELETE: api/Products/5
     [HttpDelete("{id}")]
+    [Authorize("Product Edit")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
         var product = await _context.Products.FindAsync(id);

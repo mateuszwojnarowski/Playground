@@ -32,7 +32,7 @@ public static class Config
             AllowedGrantTypes = GrantTypes.Code,
 
             AllowedScopes = { "order.edit", "order.view", "product.edit", "product.view" },
-            AlwaysIncludeUserClaimsInIdToken = false
+            AccessTokenLifetime = 300
         },
         new()
         {
@@ -42,8 +42,8 @@ public static class Config
             AllowedGrantTypes = GrantTypes.Code,
 
             RedirectUris = { "http://127.0.0.1" },
-            AllowedScopes = { "order.edit, product.edit" },
-            AlwaysIncludeUserClaimsInIdToken = false
+            AllowedScopes = { "order.edit", "order.view", "product.view" },
+            AccessTokenLifetime = 300
         }
     ];
 }

@@ -2,6 +2,5 @@
 
 public class ProductsPatch
 {
-    public Guid Id { get; set; }
-    public double Stock { get; set; }
+    public long StockQuantity { get; set; }
 }
