@@ -15,6 +15,14 @@ builder.Services.AddDbContext<OrderContext>(
 
 var app = builder.Build();
 
+// Ensure the database is created and migrated to the latest version.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<OrderContext>();
+    context.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
