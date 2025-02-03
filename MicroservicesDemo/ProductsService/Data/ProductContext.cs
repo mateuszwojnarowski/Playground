@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductsService.Models;
 using SharedModels.Models;
 
 namespace ProductsService.Data;

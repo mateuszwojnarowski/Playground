@@ -1,8 +1,7 @@
-﻿namespace ProductsService.Models
+﻿namespace SharedModels.Models;
+
+public class ProductsPatch
 {
-    public class ProductsPatch
-    {
-        public Guid Id { get; set; }
-        public double Stock { get; set; }
-    }
+    public Guid Id { get; set; }
+    public double Stock { get; set; }
 }
