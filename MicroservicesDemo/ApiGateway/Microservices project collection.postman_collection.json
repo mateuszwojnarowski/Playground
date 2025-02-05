@@ -13,7 +13,19 @@
 					"name": "Get Products",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/products",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products"
+							]
+						}
 					},
 					"response": []
 				},
@@ -55,6 +67,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n    {\r\n        \"name\": \"Test product\",\r\n        \"description\": \"test\",\r\n        \"cost\": 666,\r\n        \"stockQuantity\": 100\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:7290/api/products",
 							"protocol": "https",

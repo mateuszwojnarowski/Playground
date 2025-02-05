@@ -18,25 +18,21 @@ builder.Services.AddAuthentication()
     {
         options.Authority = "https://localhost:5001";
         options.TokenValidationParameters.ValidAudiences = ["orders"];
-        options.TokenValidationParameters.ValidateAudience = false;
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Order Edit", policy =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Order Edit", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "order.edit");
         policy.RequireRole("admin", "customer");
-    });
-
-    options.AddPolicy("Order View", policy =>
+    })
+    .AddPolicy("Order View", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "order.view");
         policy.RequireRole("admin", "customer");
     });
-});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

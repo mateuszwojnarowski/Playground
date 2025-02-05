@@ -21,32 +21,27 @@ builder.Services.AddAuthentication()
     {
         options.Authority = "https://localhost:5001";
         options.TokenValidationParameters.ValidAudiences = ["products"];
-        options.TokenValidationParameters.ValidateAudience = false;
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Product Edit", policy =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Product Edit", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.edit");
         policy.RequireRole("admin");
-    });
-
-    options.AddPolicy("Product Stock", policy =>
+    })
+    .AddPolicy("Product Stock", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.edit");
         policy.RequireRole("admin", "customer");
-    });
-
-    options.AddPolicy("Product View", policy =>
+    })
+    .AddPolicy("Product View", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.view");
         policy.RequireRole("customer", "admin");
     });
-});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
