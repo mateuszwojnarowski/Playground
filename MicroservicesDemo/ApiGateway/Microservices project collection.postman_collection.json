@@ -223,81 +223,6 @@
 					"response": []
 				}
 			],
-			"auth": {
-				"type": "oauth2",
-				"oauth2": [
-					{
-						"key": "scope",
-						"value": "order.view order.edit product.view product.edit",
-						"type": "string"
-					},
-					{
-						"key": "clientId",
-						"value": "client",
-						"type": "string"
-					},
-					{
-						"key": "refreshRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "tokenRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "authRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "tokenName",
-						"value": "Bearer",
-						"type": "string"
-					},
-					{
-						"key": "challengeAlgorithm",
-						"value": "S256",
-						"type": "string"
-					},
-					{
-						"key": "redirect_uri",
-						"value": "http://127.0.0.1",
-						"type": "string"
-					},
-					{
-						"key": "grant_type",
-						"value": "authorization_code_with_pkce",
-						"type": "string"
-					},
-					{
-						"key": "clientSecret",
-						"value": "secret",
-						"type": "string"
-					},
-					{
-						"key": "authUrl",
-						"value": "https://localhost:5001/connect/authorize",
-						"type": "string"
-					},
-					{
-						"key": "addTokenTo",
-						"value": "header",
-						"type": "string"
-					},
-					{
-						"key": "client_authentication",
-						"value": "header",
-						"type": "string"
-					},
-					{
-						"key": "accessTokenUrl",
-						"value": "https://localhost:5001/connect/token",
-						"type": "string"
-					}
-				]
-			},
 			"event": [
 				{
 					"listen": "prerequest",
@@ -328,7 +253,19 @@
 					"name": "Get Products",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7290/api/products",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7290",
+							"path": [
+								"api",
+								"products"
+							]
+						}
 					},
 					"response": []
 				},
@@ -457,81 +394,6 @@
 					"response": []
 				}
 			],
-			"auth": {
-				"type": "oauth2",
-				"oauth2": [
-					{
-						"key": "scope",
-						"value": "order.view order.edit product.view",
-						"type": "string"
-					},
-					{
-						"key": "refreshRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "tokenRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "authRequestParams",
-						"value": [],
-						"type": "any"
-					},
-					{
-						"key": "tokenName",
-						"value": "Bearer",
-						"type": "string"
-					},
-					{
-						"key": "challengeAlgorithm",
-						"value": "S256",
-						"type": "string"
-					},
-					{
-						"key": "redirect_uri",
-						"value": "http://127.0.0.1",
-						"type": "string"
-					},
-					{
-						"key": "grant_type",
-						"value": "authorization_code_with_pkce",
-						"type": "string"
-					},
-					{
-						"key": "clientSecret",
-						"value": "secret",
-						"type": "string"
-					},
-					{
-						"key": "clientId",
-						"value": "client2",
-						"type": "string"
-					},
-					{
-						"key": "authUrl",
-						"value": "https://localhost:5001/connect/authorize",
-						"type": "string"
-					},
-					{
-						"key": "addTokenTo",
-						"value": "header",
-						"type": "string"
-					},
-					{
-						"key": "client_authentication",
-						"value": "header",
-						"type": "string"
-					},
-					{
-						"key": "accessTokenUrl",
-						"value": "https://localhost:5001/connect/token",
-						"type": "string"
-					}
-				]
-			},
 			"event": [
 				{
 					"listen": "prerequest",
@@ -554,6 +416,103 @@
 					}
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "scope",
+				"value": "product.edit product.view order.edit order.view product.stock",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "client",
+				"type": "string"
+			},
+			{
+				"key": "refreshRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "authRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenName",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "http://127.0.0.1",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code_with_pkce",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "secret",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://localhost:5001/connect/authorize",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://localhost:5001/connect/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
