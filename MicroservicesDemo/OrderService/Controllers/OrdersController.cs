@@ -92,7 +92,7 @@ public class OrdersController(OrderContext context) : ControllerBase
             orderedProduct.StockQuantity -= order.OrderDetails.Single(x => x.ProductId == orderedProduct.Id).Quantity;
             if (orderedProduct.StockQuantity < 0)
             {
-                return BadRequest($"Not enough stock of {orderedProduct}");
+                return BadRequest($"Not enough stock of {orderedProduct.Name}");
             }
 
             // very inefficient but cannae be arsed to do it properly for this play example

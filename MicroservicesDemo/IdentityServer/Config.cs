@@ -16,7 +16,8 @@ public static class Config
         new(name: "order.edit", displayName: "Create orders"),
         new(name: "order.view", displayName: "View Orders"),
         new(name: "product.edit", displayName: "Manage Products"),
-        new(name: "product.view", displayName: "View Products")
+        new(name: "product.view", displayName: "View Products"),
+        new(name: "product.stock", displayName: "Modify product stock") // this could have been avoided by involving delegate token but for the sake of simplicity we are using this
     ];
 
     public static IEnumerable<ApiResource> ApiResources =>
@@ -27,7 +28,7 @@ public static class Config
         },
         new ApiResource("products", "Products API")
         {
-            Scopes = { "product.edit", "product.view" }
+            Scopes = { "product.edit", "product.view", "product.stock" }
         }
     ];
 
@@ -36,24 +37,13 @@ public static class Config
         new()
         {
             ClientId = "client",
-            Description = "Client for admin",
+            Description = "Client for api",
             ClientSecrets = { new Secret("secret".Sha256()) },
             RedirectUris = { "http://127.0.0.1" },
 
             AllowedGrantTypes = GrantTypes.Code,
 
-            AllowedScopes = { "order.edit", "order.view", "product.edit", "product.view" },
-            AccessTokenLifetime = 300
-        },
-        new()
-        {
-            ClientId = "client2",
-            Description = "Client for user",
-            ClientSecrets = { new Secret("secret".Sha256()) },
-            AllowedGrantTypes = GrantTypes.Code,
-
-            RedirectUris = { "http://127.0.0.1" },
-            AllowedScopes = { "order.edit", "order.view", "product.view" },
+            AllowedScopes = { "order.edit", "order.view", "product.edit", "product.view", "product.stock" },
             AccessTokenLifetime = 300
         }
     ];

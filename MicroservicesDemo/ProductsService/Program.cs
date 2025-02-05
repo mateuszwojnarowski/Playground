@@ -21,6 +21,7 @@ builder.Services.AddAuthentication()
     {
         options.Authority = "https://localhost:5001";
         options.TokenValidationParameters.ValidAudiences = ["products"];
+        options.TokenValidationParameters.ValidateAudience = false;
     });
 
 builder.Services.AddAuthorization(options =>
@@ -30,6 +31,13 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.edit");
         policy.RequireRole("admin");
+    });
+
+    options.AddPolicy("Product Stock", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "product.edit");
+        policy.RequireRole("admin", "customer");
     });
 
     options.AddPolicy("Product View", policy =>

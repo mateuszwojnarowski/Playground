@@ -36,8 +36,8 @@ public class ProductsController(ProductContext context) : ControllerBase
     }
 
     [HttpPut("{id}/{stockQuantity}")]
-    [Authorize("Product Edit")]
-    public async Task<IActionResult> Patch(Guid id, long stockQuantity)
+    [Authorize("Product Stock")]
+    public async Task<IActionResult> Put(Guid id, long stockQuantity)
     {
         var product = await _context.Products.FindAsync(id);
 
