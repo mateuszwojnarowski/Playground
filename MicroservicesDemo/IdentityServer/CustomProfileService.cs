@@ -1,6 +1,5 @@
 ﻿using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Test;
 using IdentityServer.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -15,10 +14,9 @@ public class CustomProfileService(
     protected override async Task GetProfileDataAsync(ProfileDataRequestContext context, User user)
     {
         var principal = await GetUserClaimsAsync(user);
-        var id = (ClaimsIdentity)principal.Identity;
-
-        //context.AddRequestedClaims(principal.Claims);
-
-        context.IssuedClaims.AddRange(id.Claims);
+        if (principal.Identity is ClaimsIdentity id)
+        {
+            context.IssuedClaims.AddRange(id.Claims);
+        }
     }
 }

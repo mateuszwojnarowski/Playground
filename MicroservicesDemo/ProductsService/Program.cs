@@ -20,7 +20,7 @@ builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:5001";
-        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidAudiences = ["products"];
     });
 
 builder.Services.AddAuthorization(options =>
@@ -29,12 +29,14 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.edit");
+        policy.RequireRole("admin");
     });
 
     options.AddPolicy("Product View", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "product.view");
+        policy.RequireRole("customer", "admin");
     });
 });
 

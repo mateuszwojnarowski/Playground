@@ -1,4 +1,5 @@
 ﻿using IdentityServer;
+using IdentityServer.Data;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -19,6 +20,13 @@ try
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();
+
+    if (args.Contains("/seed"))
+    {
+        SeedData.InitializeDatabase(app);
+        Log.Information("Database seeded");
+        return;
+    }
 
     app.Run();
 }

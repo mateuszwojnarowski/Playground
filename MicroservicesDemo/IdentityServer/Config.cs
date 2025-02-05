@@ -7,7 +7,8 @@ public static class Config
     public static IEnumerable<IdentityResource> IdentityResources =>
     [
         new IdentityResources.OpenId(),
-        new IdentityResources.Profile()
+        new IdentityResources.Profile(),
+        new IdentityResource("role", "User Role", new []{"admin", "customer"})
     ];
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -18,10 +19,20 @@ public static class Config
         new(name: "product.view", displayName: "View Products")
     ];
 
+    public static IEnumerable<ApiResource> ApiResources =>
+    [
+        new ApiResource("orders", "Orders API")
+        {
+            Scopes = { "order.edit", "order.view" }
+        },
+        new ApiResource("products", "Products API")
+        {
+            Scopes = { "product.edit", "product.view" }
+        }
+    ];
+
     public static IEnumerable<Client> Clients =>
     [
-        // better to use one client and have rights to restrict the usage of api calls
-        // but for the sake of this exercise it is better to have two clients
         new()
         {
             ClientId = "client",

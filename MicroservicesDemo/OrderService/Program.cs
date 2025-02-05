@@ -17,7 +17,7 @@ builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:5001";
-        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidAudiences = ["orders"];
     });
 
 builder.Services.AddAuthorization(options =>
@@ -26,12 +26,14 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "order.edit");
+        policy.RequireRole("admin", "customer");
     });
 
     options.AddPolicy("Order View", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("scope", "order.view");
+        policy.RequireRole("admin", "customer");
     });
 });
 
