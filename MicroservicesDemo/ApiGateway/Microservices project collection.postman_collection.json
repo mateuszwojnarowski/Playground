@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Admin",
+			"name": "Product",
 			"item": [
 				{
 					"name": "Get Products",
@@ -130,97 +130,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get Orders",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7290/api/orders",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"orders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Orders By Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7290/api/orders/4da17cfc-2239-460c-8e12-08dd44a04b8f",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"orders",
-								"4da17cfc-2239-460c-8e12-08dd44a04b8f"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post Order",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"OrderDetails\": [\r\n        {\r\n            \"ProductId\": \"7223634c-c992-4967-9cda-4cb4192f0a2e\",\r\n            \"Quantity\": 10,\r\n            \"SoldAtUnitPrice\": 10\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7290/api/orders",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"orders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete order",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7290/api/orders/e36accf0-393e-446c-3f1e-08dd44a165ae",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"orders",
-								"e36accf0-393e-446c-3f1e-08dd44a165ae"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"event": [
@@ -247,61 +156,8 @@
 			]
 		},
 		{
-			"name": "User",
+			"name": "Order",
 			"item": [
-				{
-					"name": "Get Products",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:7290/api/products",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"products"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Product by Id",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[\r\n    \r\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7290/api/products/a0fa5a1f-fc38-4491-90da-2b04ea7bd679",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7290",
-							"path": [
-								"api",
-								"products",
-								"a0fa5a1f-fc38-4491-90da-2b04ea7bd679"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Get Orders",
 					"request": {
