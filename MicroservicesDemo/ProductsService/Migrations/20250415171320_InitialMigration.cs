@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace ProductsService.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +17,7 @@ namespace ProductsService.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     StockQuantity = table.Column<long>(type: "bigint", nullable: false)
                 },
