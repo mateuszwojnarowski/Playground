@@ -25,7 +25,6 @@ try
     {
         SeedData.InitializeDatabase(app);
         Log.Information("Database seeded");
-        return;
     }
 
     app.Run();
