@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using ProductsService.Data;
 using Serilog;
 
@@ -19,8 +20,17 @@ builder.Host.UseSerilog((ctx, lc) => lc
 builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
     {
+        Console.WriteLine(builder.Configuration["IdentityServerUrl"]);
         options.Authority = builder.Configuration["IdentityServerUrl"];
-        options.TokenValidationParameters.ValidAudiences = ["products"];
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["IdentityServerUrl"],
+            ValidateAudience = true,
+            ValidAudience = "products",
+        };
+        //options.TokenValidationParameters.ValidAudiences = ["products"];
     });
 
 builder.Services.AddAuthorizationBuilder()

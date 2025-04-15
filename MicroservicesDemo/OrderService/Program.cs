@@ -16,6 +16,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
 builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
     {
+        options.RequireHttpsMetadata = false;
         options.Authority = builder.Configuration["IdentityServerUrl"];
         options.TokenValidationParameters.ValidAudiences = ["orders"];
     });

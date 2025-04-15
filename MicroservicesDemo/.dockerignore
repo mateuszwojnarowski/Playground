@@ -1,0 +1,43 @@
+# Ignore build output directories
+**/bin/
+**/obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.temp
+*.pid
+*.sdf
+*.sqlite
+*.sqlite3
+
+# Ignore IDE-specific files
+.vscode/ 
+.idea/
+*.code-workspace
+
+# Ignore dependency caches
+node_modules/
+*.npm
+*.nuget
+*.pdb
+
+# Ignore Docker-related files
+Dockerfile.*
+docker-compose.*
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore test projects
+**/TestResults/
+**/*.Tests/
+**/*.Test/

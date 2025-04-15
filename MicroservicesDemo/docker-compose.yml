@@ -1,0 +1,86 @@
+services:
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=P@ssw0rd!
+    ports:
+      - "1450:1433"
+
+  identity-server:
+    build:
+      context: .
+      dockerfile: IdentityServer/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=IdentityDb;User=sa;Password=P@ssw0rd!;TrustServerCertificate=true
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
+      - IdentityServerUrl=http://identity-server
+    depends_on:
+      - sql-server
+    ports:
+      - "8000:80"
+      - "5001:443"
+    command: ["/seed"]
+    volumes:
+    - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
+
+  order-service:
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+    environment:
+      - ConnectionStrings__OrderDB=Server=sql-server;Database=OrderDb;User=sa;Password=P@ssw0rd!;TrustServerCertificate=true
+      - IdentityServerUrl=http://identity-server
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - sql-server
+      - identity-server
+    ports:
+      - "8001:80"
+      - "7117:443"
+    volumes:
+    - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
+
+  product-service:
+    build:
+      context: .
+      dockerfile: ProductsService/Dockerfile
+    environment:
+      - ConnectionStrings__ProductDB=Server=sql-server;Database=ProductDb;User=sa;Password=P@ssw0rd!;TrustServerCertificate=true
+      - IdentityServerUrl=http://identity-server
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - sql-server
+      - identity-server
+    ports:
+      - "8002:80"
+      - "7228:443"
+    volumes:
+    - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    environment:
+      - OrderServiceUrl=order-service
+      - OrderServicePort=80
+      - ProductsServicePort=80
+      - ProductsServiceUrl=product-service
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - order-service
+      - product-service
+    ports:
+      - "8003:80"
+      - "7290:443"
+    volumes:
+    - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx

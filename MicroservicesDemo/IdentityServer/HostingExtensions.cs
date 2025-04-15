@@ -29,6 +29,7 @@ internal static class HostingExtensions
 
         builder.Services.AddIdentityServer(options =>
             {
+                options.IssuerUri = builder.Configuration["IdentityServerUrl"];
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -37,6 +38,7 @@ internal static class HostingExtensions
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 options.EmitStaticAudienceClaim = true;
             })
+            .AddDeveloperSigningCredential()
             .AddConfigurationStore(options =>
             {
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString,

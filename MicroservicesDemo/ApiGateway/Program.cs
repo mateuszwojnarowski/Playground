@@ -4,11 +4,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-//builder.Services.AddControllers();
-//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOcelot();
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
@@ -19,13 +15,30 @@ builder.Host.UseSerilog((ctx, lc) => lc
 
 builder.Configuration.AddJsonFile("ocelot.json");
 
+// Replace placeholders in Ocelot configuration
+// get serilog
+
+var orderServiceUrl = builder.Configuration["OrderServiceUrl"];
+var orderServicePort = builder.Configuration["OrderServicePort"];
+var productsServiceUrl = builder.Configuration["ProductsServiceUrl"];
+var productsServicePort = builder.Configuration["ProductsServicePort"];
+
+// this is to ensure we have correct values for ocelot. Should be somewhere else ideally but this project is not about making iţ pristine.
+builder.Configuration["Routes:0:DownstreamHostAndPorts:0:Host"] = orderServiceUrl;
+builder.Configuration["Routes:0:DownstreamHostAndPorts:0:Port"] = orderServicePort;
+builder.Configuration["Routes:1:DownstreamHostAndPorts:0:Host"] = productsServiceUrl;
+builder.Configuration["Routes:1:DownstreamHostAndPorts:0:Port"] = productsServicePort;
+
+builder.Configuration["SwaggerEndPoints:0:Config:0:Url"] = $"http://{productsServiceUrl}:{productsServicePort}/swagger/v1/swagger.json";
+builder.Configuration["SwaggerEndPoints:1:Config:0:Url"] = $"http://{orderServiceUrl}:{orderServicePort}/swagger/v1/swagger.json";
+
 var app = builder.Build();
 
 //// Configure the HTTP request pipeline.
 
 app.UseSwaggerForOcelotUI(opt =>
 {
-    var serverOcelot = app.Configuration["ServerOcelot"]; // Could be replaced by a non-existing functionality https://github.com/dotnet/aspnetcore/issues/5898
+    var serverOcelot = app.Configuration["ServerOcelot"];
     opt.PathToSwaggerGenerator = "/swagger/docs";
     opt.DownstreamSwaggerEndPointBasePath = $"{serverOcelot}/swagger/docs";
     opt.ServerOcelot = $"{serverOcelot}";
@@ -35,6 +48,5 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-//app.MapControllers();
 app.UseOcelot().Wait();
 app.Run();
