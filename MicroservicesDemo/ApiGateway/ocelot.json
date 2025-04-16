@@ -1,13 +1,14 @@
 {  
 "GlobalConfiguration": {
     "HttpHandlerOptions": {
-      "DangerousAcceptAnyServerCertificateValidator": true
+      "DangerousAcceptAnyServerCertificateValidator": true,
+      "AllowAutoRedirect": true
     }
   },
  "Routes": [  
    {  
      "DownstreamPathTemplate": "/orders/{everything}",  
-     "DownstreamScheme": "https",  
+     "DownstreamScheme": "http",  
      "DownstreamHostAndPorts": [  
        {  
          "Host": "",  
@@ -19,7 +20,7 @@
    },  
    {  
      "DownstreamPathTemplate": "/products/{everything}",  
-     "DownstreamScheme": "https",  
+     "DownstreamScheme": "http",  
      "DownstreamHostAndPorts": [  
        {  
          "Host": "",  

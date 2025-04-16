@@ -14,7 +14,7 @@ namespace OrderService.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class OrdersController(OrderContext context) : ControllerBase
+public class OrdersController(OrderContext context, IConfiguration configuration) : ControllerBase
 {
     private readonly OrderContext _context = context;
 
@@ -59,7 +59,7 @@ public class OrdersController(OrderContext context) : ControllerBase
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new
-            Uri("https://localhost:7290/api/");
+            Uri(configuration["ProductsApiUrl"]);
 
         // pass the token to this request
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Headers["Authorization"].ToString().Split(" ")[1]);
