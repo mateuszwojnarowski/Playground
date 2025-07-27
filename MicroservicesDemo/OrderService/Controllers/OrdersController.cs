@@ -59,10 +59,11 @@ public class OrdersController(OrderContext context, IConfiguration configuration
     {
         using var httpClient = new HttpClient();
         httpClient.BaseAddress = new
-            Uri(configuration["ProductsApiUrl"]);
+            Uri(configuration["ProductsApiUrl"] ?? string.Empty);
 
         // pass the token to this request
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Headers["Authorization"].ToString().Split(" ")[1]);
+        httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", Request.Headers["Authorization"].ToString().Split(" ")[1]);
         var response = await httpClient.GetAsync("products");
 
         List<Product>? products = null;
@@ -126,7 +127,7 @@ public class OrdersController(OrderContext context, IConfiguration configuration
         {
             return NotFound();
         }
-            
+
         //return back stuff to stock
 
         _context.Orders.Remove(order);

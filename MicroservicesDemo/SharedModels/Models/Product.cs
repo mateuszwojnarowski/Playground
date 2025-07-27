@@ -7,16 +7,16 @@ public class Product
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
     [Required, MaxLength(250)]
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
     [MaxLength(2048)]
-    public string? Description { get; set; } = string.Empty;
+    public string? Description { get; init; }
 
     [Required]
-    public decimal Cost { get; set; }
+    public decimal Cost { get; init; }
 
     [Required]
     public long StockQuantity { get; set; }

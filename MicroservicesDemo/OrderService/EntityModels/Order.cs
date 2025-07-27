@@ -7,7 +7,7 @@ public class Order
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     [Required]
-    public IEnumerable<OrderItem> OrderDetails { get; set; }
+    public required IEnumerable<OrderItem> OrderDetails { get; init; }
 }
