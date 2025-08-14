@@ -28,7 +28,6 @@ services:
     depends_on:
       sql-server:
         condition: service_healthy
-    command: ["/seed"]
     ports:
       - "5001:443"
 
