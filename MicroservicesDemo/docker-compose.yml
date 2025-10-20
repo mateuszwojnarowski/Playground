@@ -6,7 +6,13 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=P@ssw0rd!
     ports:
-      - "1433:1433"
+      - "1434:1433"  # Using different port to avoid conflict
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'P@ssw0rd!' -Q 'SELECT 1' -C || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   identity-server:
     build:
@@ -20,8 +26,8 @@ services:
     volumes:
       - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
     depends_on:
-      - sql-server
-    command: ["/seed"]
+      sql-server:
+        condition: service_healthy
     ports:
       - "5001:443"
 
@@ -39,8 +45,10 @@ services:
     volumes:
       - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
     depends_on:
-      - sql-server
-      - identity-server
+      sql-server:
+        condition: service_healthy
+      identity-server:
+        condition: service_started
 
   product-service:
     build:
@@ -55,25 +63,32 @@ services:
     volumes:
       - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
     depends_on:
-      - sql-server
-      - identity-server
+      sql-server:
+        condition: service_healthy
+      identity-server:
+        condition: service_started
 
   api-gateway:
     build:
       context: .
       dockerfile: ApiGateway/Dockerfile
     environment:
-      - OrderServiceUrl=order-service
-      - OrderServicePort=80
-      - ProductsServicePort=80
-      - ProductsServiceUrl=product-service
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
+      - ReverseProxy__Clusters__products-cluster__Destinations__destination1__Address=http://product-service/
+      - ReverseProxy__Clusters__orders-cluster__Destinations__destination1__Address=http://product-service/
+
     volumes:
       - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx
     depends_on:
-      - order-service
-      - product-service
-    ports:
+      sql-server:
+        condition: service_healthy
+      identity-server:
+        condition: service_started
+      order-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+    ports: 
       - "7290:443"

@@ -20,12 +20,9 @@ try
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();
-
-    if (args.Contains("/seed"))
-    {
-        SeedData.InitializeDatabase(app);
-        Log.Information("Database seeded");
-    }
+    
+    SeedData.InitializeDatabase(app);
+    Log.Information("Database seeded");
 
     app.Run();
 }
