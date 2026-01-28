@@ -77,7 +77,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetcore-dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPw123
       - ReverseProxy__Clusters__products-cluster__Destinations__destination1__Address=http://product-service/
-      - ReverseProxy__Clusters__orders-cluster__Destinations__destination1__Address=http://product-service/
+      - ReverseProxy__Clusters__orders-cluster__Destinations__destination1__Address=http://order-service/
 
     volumes:
       - ./aspnetcore-dev-cert.pfx:/app/aspnetcore-dev-cert.pfx

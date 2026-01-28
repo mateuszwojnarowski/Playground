@@ -7,4 +7,4 @@ TODO: Change it so that it will seed db only if needed
 This is to ensure that all moving parts are happy with some certificate. **THIS IS NOT PRODUCTION READY**
 
 Run the following in Powershell:
-> dotnet dev-certs https -ep "$pwd\aspnetapp.pfx" -p MyPw123
+> dotnet dev-certs https -ep "$pwd\aspnetcore-dev-cert.pfx" -p MyPw123
