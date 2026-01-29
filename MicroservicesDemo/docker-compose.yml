@@ -92,3 +92,15 @@ services:
         condition: service_started
     ports: 
       - "7290:443"
+
+  client-app:
+    build:
+      context: ./ClientApp
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - identity-server
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production

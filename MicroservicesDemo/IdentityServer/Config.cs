@@ -45,6 +45,32 @@ public static class Config
 
             AllowedScopes = { "order.edit", "order.view", "product.edit", "product.view", "product.stock" },
             AccessTokenLifetime = 300
+        },
+        new()
+        {
+            ClientId = "react-client",
+            ClientName = "React SPA Client",
+            AllowedGrantTypes = GrantTypes.Code,
+            RequireClientSecret = false,
+            RequirePkce = true,
+            
+            RedirectUris = { "http://localhost:3000/callback", "http://localhost:3000/silent-renew" },
+            PostLogoutRedirectUris = { "http://localhost:3000" },
+            AllowedCorsOrigins = { "http://localhost:3000" },
+            
+            AllowedScopes = { 
+                "openid", 
+                "profile",
+                "order.edit", 
+                "order.view", 
+                "product.edit", 
+                "product.view", 
+                "product.stock" 
+            },
+            
+            AllowAccessTokensViaBrowser = true,
+            AccessTokenLifetime = 3600,
+            RequireConsent = false
         }
     ];
 }
