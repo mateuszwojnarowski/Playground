@@ -1,4 +1,125 @@
 <Solution>
+  <Folder Name="/modules/" />
+  <Folder Name="/modules/01-http-trigger/" />
+  <Folder Name="/modules/01-http-trigger/examples/">
+    <Project Path="modules/01-http-trigger/examples/HttpTriggerExamples.csproj" />
+  </Folder>
+  <Folder Name="/modules/01-http-trigger/exercise/">
+    <Project Path="modules/01-http-trigger/exercise/HttpTriggerExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/01-http-trigger/exercise/tests/">
+    <Project Path="modules/01-http-trigger/exercise/tests/HttpTriggerExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/02-timer-trigger/" />
+  <Folder Name="/modules/02-timer-trigger/examples/">
+    <Project Path="modules/02-timer-trigger/examples/TimerTriggerExamples.csproj" />
+  </Folder>
+  <Folder Name="/modules/02-timer-trigger/exercise/">
+    <Project Path="modules/02-timer-trigger/exercise/TimerTriggerExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/02-timer-trigger/exercise/tests/">
+    <Project Path="modules/02-timer-trigger/exercise/tests/TimerTriggerExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/03-storage-queue-trigger/" />
+  <Folder Name="/modules/03-storage-queue-trigger/examples/">
+    <Project Path="modules/03-storage-queue-trigger/examples/QueueTriggerExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/03-storage-queue-trigger/exercise/">
+    <Project Path="modules/03-storage-queue-trigger/exercise/StorageQueueExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/03-storage-queue-trigger/exercise/tests/">
+    <Project Path="modules/03-storage-queue-trigger/exercise/tests/StorageQueueExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/04-blob-trigger/" />
+  <Folder Name="/modules/04-blob-trigger/examples/">
+    <Project Path="modules/04-blob-trigger/examples/BlobTriggerExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/04-blob-trigger/exercise/">
+    <Project Path="modules/04-blob-trigger/exercise/BlobTriggerExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/04-blob-trigger/exercise/tests/">
+    <Project Path="modules/04-blob-trigger/exercise/tests/BlobTriggerExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/05-servicebus-queue/" />
+  <Folder Name="/modules/05-servicebus-queue/examples/">
+    <Project Path="modules/05-servicebus-queue/examples/QueueTriggerExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/05-servicebus-queue/exercise/">
+    <Project Path="modules/05-servicebus-queue/exercise/ServiceBusQueueExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/05-servicebus-queue/exercise/tests/">
+    <Project Path="modules/05-servicebus-queue/exercise/tests/ServiceBusQueueExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/06-servicebus-topic/" />
+  <Folder Name="/modules/06-servicebus-topic/examples/">
+    <Project Path="modules/06-servicebus-topic/examples/TopicAuditExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/06-servicebus-topic/exercise/">
+    <Project Path="modules/06-servicebus-topic/exercise/ServiceBusTopicExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/06-servicebus-topic/exercise/tests/">
+    <Project Path="modules/06-servicebus-topic/exercise/tests/ServiceBusTopicExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/07-servicebus-pipeline/" />
+  <Folder Name="/modules/07-servicebus-pipeline/examples/">
+    <Project Path="modules/07-servicebus-pipeline/examples/ServiceBusPipelineExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/07-servicebus-pipeline/exercise/">
+    <Project Path="modules/07-servicebus-pipeline/exercise/ServiceBusPipelineExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/07-servicebus-pipeline/exercise/tests/">
+    <Project Path="modules/07-servicebus-pipeline/exercise/tests/ServiceBusPipelineExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/08-sql-read/" />
+  <Folder Name="/modules/08-sql-read/examples/">
+    <Project Path="modules/08-sql-read/examples/SqlReadExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/08-sql-read/exercise/">
+    <Project Path="modules/08-sql-read/exercise/SqlReadExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/08-sql-read/exercise/tests/">
+    <Project Path="modules/08-sql-read/exercise/tests/SqlReadExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth-oidc-oauth2/" />
+  <Folder Name="/modules/09-auth-oidc-oauth2/examples/">
+    <Project Path="modules/09-auth-oidc-oauth2/examples/AuthOidcExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth-oidc-oauth2/exercise/">
+    <Project Path="modules/09-auth-oidc-oauth2/exercise/AuthOidcExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth-oidc-oauth2/exercise/tests/">
+    <Project Path="modules/09-auth-oidc-oauth2/exercise/tests/AuthOidcExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/10-cosmosdb-trigger/" />
+  <Folder Name="/modules/10-cosmosdb-trigger/examples/">
+    <Project Path="modules/10-cosmosdb-trigger/examples/CosmosDbTriggerExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/10-cosmosdb-trigger/exercise/">
+    <Project Path="modules/10-cosmosdb-trigger/exercise/CosmosDbTriggerExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/10-cosmosdb-trigger/exercise/tests/">
+    <Project Path="modules/10-cosmosdb-trigger/exercise/tests/CosmosDbTriggerExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/11-cosmosdb-readwrite/" />
+  <Folder Name="/modules/11-cosmosdb-readwrite/examples/">
+    <Project Path="modules/11-cosmosdb-readwrite/examples/CosmosDbReadWriteExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/11-cosmosdb-readwrite/exercise/">
+    <Project Path="modules/11-cosmosdb-readwrite/exercise/CosmosDbReadWriteExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/11-cosmosdb-readwrite/exercise/tests/">
+    <Project Path="modules/11-cosmosdb-readwrite/exercise/tests/CosmosDbReadWriteExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/12-cosmosdb-servicebus-pipeline/" />
+  <Folder Name="/modules/12-cosmosdb-servicebus-pipeline/examples/">
+    <Project Path="modules/12-cosmosdb-servicebus-pipeline/examples/CosmosDbServiceBusPipelineExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/12-cosmosdb-servicebus-pipeline/exercise/">
+    <Project Path="modules/12-cosmosdb-servicebus-pipeline/exercise/CosmosDbServiceBusPipelineExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/12-cosmosdb-servicebus-pipeline/exercise/tests/">
+    <Project Path="modules/12-cosmosdb-servicebus-pipeline/exercise/tests/CosmosDbServiceBusPipelineExercise.Tests.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Shared/Shared.csproj" />
   </Folder>

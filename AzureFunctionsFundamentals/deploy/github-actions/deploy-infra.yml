@@ -1,0 +1,67 @@
+name: Deploy Azure Functions infrastructure
+
+"on":
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: GitHub Environment that protects this deployment, for example dev, test, or prod.
+        required: true
+        default: dev
+        type: environment
+      resource_group_name:
+        description: Existing Azure resource group to deploy into, for example rg-functions-fundamentals-dev.
+        required: true
+        type: string
+      resource_prefix:
+        description: Short lowercase prefix used by the Bicep template for Azure resource names.
+        required: true
+        default: azfuncfund
+        type: string
+      location:
+        description: Azure region for resources.
+        required: true
+        default: westeurope
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  BICEP_FILE: AzureFunctionsFundamentals/deploy/bicep/main.bicep
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy Bicep
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy resource group Bicep template
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          resourceGroupName: ${{ inputs.resource_group_name }}
+          template: ${{ env.BICEP_FILE }}
+          parameters: >-
+            resourcePrefix=${{ inputs.resource_prefix }}
+            location=${{ inputs.location }}
+          failOnStdErr: false
+
+      # Alternative Azure CLI form if you prefer az directly:
+      # - name: Deploy with Azure CLI
+      #   run: |
+      #     az deployment group create \
+      #       --resource-group "${{ inputs.resource_group_name }}" \
+      #       --template-file "${{ env.BICEP_FILE }}" \
+      #       --parameters resourcePrefix="${{ inputs.resource_prefix }}" location="${{ inputs.location }}"

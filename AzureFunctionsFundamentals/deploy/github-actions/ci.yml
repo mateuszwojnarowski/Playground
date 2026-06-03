@@ -1,0 +1,40 @@
+name: Azure Functions CI
+
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - "AzureFunctionsFundamentals/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "AzureFunctionsFundamentals/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore solution
+        run: dotnet restore AzureFunctionsFundamentals/AzureFunctionsFundamentals.sln
+
+      - name: Build solution
+        run: dotnet build AzureFunctionsFundamentals/AzureFunctionsFundamentals.sln --configuration Release --no-restore
+
+      - name: Test solution
+        run: dotnet test AzureFunctionsFundamentals/AzureFunctionsFundamentals.sln --configuration Release --no-build --verbosity normal

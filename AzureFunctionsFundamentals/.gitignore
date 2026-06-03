@@ -1,0 +1,11 @@
+## .NET build outputs
+bin/
+obj/
+*.user
+
+## Azure Functions local settings should be committed for the course (they contain
+## only emulator/dev connection strings), but never real secrets.
+
+## Rider / VS
+.idea/
+.vs/
