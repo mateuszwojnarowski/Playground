@@ -1,0 +1,79 @@
+version: "3.9"
+
+# Local learning stack for AzureFunctionsFundamentals.
+#
+#   docker compose up -d
+#
+# Services:
+#   azurite    - Blob/Queue/Table storage emulator      (ports 10000-10002)
+#   sqledge    - SQL backend required by the SB emulator (internal)
+#   servicebus - Azure Service Bus emulator              (port 5672)
+#   sqlserver  - SQL Server for the DB-read module       (port 1433)
+#   cosmosdb   - Azure Cosmos DB Linux emulator          (port 8081, 10250-10255)
+#
+# NOTE: The Service Bus emulator requires you to accept its EULA by setting
+# ACCEPT_EULA=Y. The same applies to the SQL containers.
+
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: aff-azurite
+    command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --loose --skipApiVersionCheck"
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite-data:/data
+
+  sqledge:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: aff-sqledge
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_password123!"
+    # Used internally by the Service Bus emulator. Not exposed on the host to
+    # avoid clashing with the sqlserver service below.
+
+  servicebus:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    container_name: aff-servicebus
+    depends_on:
+      - sqledge
+    ports:
+      - "5672:5672"
+      - "5300:5300"
+    environment:
+      ACCEPT_EULA: "Y"
+      SQL_SERVER: sqledge
+      MSSQL_SA_PASSWORD: "Your_password123!"
+    volumes:
+      - ./servicebus-emulator/config.json:/ServiceBus_Emulator/ConfigFiles/Config.json
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: aff-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_password123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+  cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    container_name: aff-cosmosdb
+    environment:
+      AZURE_COSMOS_EMULATOR_PARTITION_COUNT: "3"
+      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: "true"
+    ports:
+      - "8081:8081"
+      - "10250-10255:10250-10255"
+    volumes:
+      - cosmos-data:/data/db
+
+volumes:
+  azurite-data:
+  sqlserver-data:
+  cosmos-data:

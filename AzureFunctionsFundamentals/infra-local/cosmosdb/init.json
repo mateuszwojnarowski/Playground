@@ -1,0 +1,17 @@
+{
+  "_comment": "Cosmos DB topology for Modules 10-12. Created by infra-local/scripts/seed-cosmos.sh.",
+  "database": "LearningDb",
+  "containers": [
+    { "name": "orders",        "partitionKey": "/customerId", "throughput": 400 },
+    { "name": "orders-leases", "partitionKey": "/id",         "throughput": 400 },
+    { "name": "audit",         "partitionKey": "/customerId", "throughput": 400 },
+    { "name": "products",      "partitionKey": "/category",   "throughput": 400 }
+  ],
+  "seed": {
+    "products": [
+      { "id": "p-001", "category": "books",       "name": "Clean Architecture", "price": 38.50 },
+      { "id": "p-002", "category": "books",       "name": "The Pragmatic Programmer", "price": 41.00 },
+      { "id": "p-003", "category": "electronics", "name": "Mechanical Keyboard", "price": 89.99 }
+    ]
+  }
+}
