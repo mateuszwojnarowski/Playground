@@ -1,13 +1,12 @@
 using Microsoft.Extensions.Configuration;
 
-namespace AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Examples;
 
 public sealed class AuthOptions
 {
     public required string Authority { get; init; }
     public required string Audience { get; init; }
     public string? Issuer { get; init; }
-    public string RequiredPermission { get; init; } = "orders.read";
     public bool RequireHttpsMetadata { get; init; } = true;
 
     public static AuthOptions FromConfiguration(IConfiguration configuration)
@@ -30,7 +29,6 @@ public sealed class AuthOptions
             Authority = authority.TrimEnd('/'),
             Audience = audience,
             Issuer = configuration["Auth:Issuer"],
-            RequiredPermission = configuration["Auth:RequiredPermission"] ?? "orders.read",
             RequireHttpsMetadata = !bool.TryParse(configuration["Auth:RequireHttpsMetadata"], out var requireHttps) || requireHttps
         };
     }

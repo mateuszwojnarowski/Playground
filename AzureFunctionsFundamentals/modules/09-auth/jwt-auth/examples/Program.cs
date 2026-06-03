@@ -1,4 +1,4 @@
-using AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Examples;
+using AzureFunctionsFundamentals.Modules.Auth.JwtAuth.Examples;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,9 +11,8 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services.AddSingleton(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
-    return Options.Create(AuthOptions.FromConfiguration(configuration));
+    return Options.Create(JwtOptions.FromConfiguration(configuration));
 });
-builder.Services.AddSingleton<ISigningKeyProvider, OidcSigningKeyProvider>();
-builder.Services.AddSingleton<ITokenValidator, JwtBearerValidator>();
+builder.Services.AddSingleton<JwtTokenService>();
 
 builder.Build().Run();

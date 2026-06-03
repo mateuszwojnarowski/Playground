@@ -1,12 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+using AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Exercise;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;
 
-namespace AuthOidcExercise.Tests;
+namespace OidcOAuthExercise.Tests;
 
 public sealed class TokenAuthorizerTests
 {
@@ -107,7 +107,7 @@ public sealed class TokenAuthorizerTests
 
     private sealed class NeverCalledTokenValidator : ITokenValidator
     {
-        public Task<AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise.TokenValidationResult> ValidateAsync(string? authorizationHeader, CancellationToken cancellationToken) =>
+        public Task<AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Exercise.TokenValidationResult> ValidateAsync(string? authorizationHeader, CancellationToken cancellationToken) =>
             throw new InvalidOperationException("Claims-only authorizer tests should not validate raw tokens.");
     }
 }

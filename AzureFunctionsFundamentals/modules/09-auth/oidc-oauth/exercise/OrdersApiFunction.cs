@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Options;
 
-namespace AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Exercise;
 
 public sealed class OrdersApiFunction(TokenAuthorizer authorizer, IOptions<AuthOptions> options)
 {

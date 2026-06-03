@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 
-namespace AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Examples;
+namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Examples;
 
 public sealed class ProtectedClaimsFunction(ITokenValidator tokenValidator)
 {

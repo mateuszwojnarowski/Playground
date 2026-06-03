@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Exercise;
 
 public enum AuthorizationStatus
 {

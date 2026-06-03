@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 
-namespace AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Exercise;
 
 public sealed record SigningKeySet(string Issuer, ICollection<SecurityKey> SigningKeys);
 

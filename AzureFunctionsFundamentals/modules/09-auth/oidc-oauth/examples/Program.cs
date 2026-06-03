@@ -1,4 +1,4 @@
-using AzureFunctionsFundamentals.Modules.AuthOidcOAuth2.Exercise;
+using AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Examples;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +15,5 @@ builder.Services.AddSingleton(sp =>
 });
 builder.Services.AddSingleton<ISigningKeyProvider, OidcSigningKeyProvider>();
 builder.Services.AddSingleton<ITokenValidator, JwtBearerValidator>();
-builder.Services.AddSingleton<TokenAuthorizer>();
 
 builder.Build().Run();
