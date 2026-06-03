@@ -234,7 +234,7 @@ Start with local setup, then work through the modules in order:
 - [Service Bus topic](../modules/06-servicebus-topic/)
 - [Service Bus pipeline](../modules/07-servicebus-pipeline/)
 - [SQL read](../modules/08-sql-read/)
-- [Auth: OIDC / OAuth2.0](../modules/09-auth-oidc-oauth2/)
+- [Auth: Basic / JWT / OIDC](../modules/09-auth/)
 - [Cosmos DB trigger](../modules/10-cosmosdb-trigger/)
 - [Cosmos DB read/write](../modules/11-cosmosdb-readwrite/)
 - [Cosmos DB + Service Bus pipeline](../modules/12-cosmosdb-servicebus-pipeline/)

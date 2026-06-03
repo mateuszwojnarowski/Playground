@@ -80,15 +80,33 @@
   <Folder Name="/modules/08-sql-read/exercise/tests/">
     <Project Path="modules/08-sql-read/exercise/tests/SqlReadExercise.Tests.csproj" />
   </Folder>
-  <Folder Name="/modules/09-auth-oidc-oauth2/" />
-  <Folder Name="/modules/09-auth-oidc-oauth2/examples/">
-    <Project Path="modules/09-auth-oidc-oauth2/examples/AuthOidcExample.csproj" />
+  <Folder Name="/modules/09-auth/" />
+  <Folder Name="/modules/09-auth/basic-auth/examples/">
+    <Project Path="modules/09-auth/basic-auth/examples/BasicAuthExample.csproj" />
   </Folder>
-  <Folder Name="/modules/09-auth-oidc-oauth2/exercise/">
-    <Project Path="modules/09-auth-oidc-oauth2/exercise/AuthOidcExercise.csproj" />
+  <Folder Name="/modules/09-auth/basic-auth/exercise/">
+    <Project Path="modules/09-auth/basic-auth/exercise/BasicAuthExercise.csproj" />
   </Folder>
-  <Folder Name="/modules/09-auth-oidc-oauth2/exercise/tests/">
-    <Project Path="modules/09-auth-oidc-oauth2/exercise/tests/AuthOidcExercise.Tests.csproj" />
+  <Folder Name="/modules/09-auth/basic-auth/exercise/tests/">
+    <Project Path="modules/09-auth/basic-auth/exercise/tests/BasicAuthExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/jwt-auth/examples/">
+    <Project Path="modules/09-auth/jwt-auth/examples/JwtAuthExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/jwt-auth/exercise/">
+    <Project Path="modules/09-auth/jwt-auth/exercise/JwtAuthExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/jwt-auth/exercise/tests/">
+    <Project Path="modules/09-auth/jwt-auth/exercise/tests/JwtAuthExercise.Tests.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/oidc-oauth/examples/">
+    <Project Path="modules/09-auth/oidc-oauth/examples/OidcOAuthExample.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/oidc-oauth/exercise/">
+    <Project Path="modules/09-auth/oidc-oauth/exercise/OidcOAuthExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/09-auth/oidc-oauth/exercise/tests/">
+    <Project Path="modules/09-auth/oidc-oauth/exercise/tests/OidcOAuthExercise.Tests.csproj" />
   </Folder>
   <Folder Name="/modules/10-cosmosdb-trigger/" />
   <Folder Name="/modules/10-cosmosdb-trigger/examples/">

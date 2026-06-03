@@ -3,7 +3,8 @@
 A hands-on course for learning **Azure Functions** end to end: concepts, every
 major trigger, local emulators, real-world exercises with **acceptance criteria**
 and **unit tests**, plus deployment (**Bicep** + **GitHub Actions**),
-observability (**Application Insights**), and **token-based auth (OIDC/OAuth2.0)**.
+observability (**Application Insights**), and **authentication & authorization**
+(**Basic**, **JWT**, and **OIDC/OAuth 2.0** with ASP.NET Core Identity).
 
 Everything targets **.NET 10** and the **isolated worker** model on Functions v4.
 
@@ -36,7 +37,7 @@ Everything targets **.NET 10** and the **isolated worker** model on Functions v4
 | 06 | [Service Bus topic](modules/06-servicebus-topic/) | SB topic/subscription |
 | 07 | [Service Bus pipeline](modules/07-servicebus-pipeline/) | SB receive → send |
 | 08 | [SQL read](modules/08-sql-read/) | SB-triggered + SqlConnection |
-| 09 | [Auth: OIDC / OAuth2.0](modules/09-auth-oidc-oauth2/) | Token-based auth |
+| 09 | [Auth: Basic / JWT / OIDC](modules/09-auth/) | Authentication & authorization |
 | 10 | [Cosmos DB trigger](modules/10-cosmosdb-trigger/) | Cosmos change feed |
 | 11 | [Cosmos DB read/write](modules/11-cosmosdb-readwrite/) | Cosmos SDK |
 | 12 | [Cosmos DB + Service Bus pipeline](modules/12-cosmosdb-servicebus-pipeline/) | SB → Cosmos enrich |

@@ -2,7 +2,10 @@
 
 ## Scenario
 
-You own a small Orders API implemented as Azure Functions isolated worker. Operations teams need a public health endpoint, but order data must be protected. Clients must send an access token issued for this API and the token must include `orders.read` as a scope or role.
+You own a small Orders API implemented as Azure Functions isolated worker.
+Operations teams need a public health endpoint, but order data must be protected.
+Clients must send an access token issued for this API by your OIDC/OAuth provider,
+and the token must include `orders.read` as a scope or role.
 
 ## Endpoints
 
@@ -21,55 +24,65 @@ You own a small Orders API implemented as Azure Functions isolated worker. Opera
 
 ## Run locally
 
-Start your local OIDC provider, such as the repo's IdentityServerQuickstart / Duende IdentityServer if available, and configure it with:
+Stand up an OIDC/OAuth provider backed by **ASP.NET Core Identity** (for example an
+ASP.NET Core host using the open-source OpenIddict server on top of Identity), and
+configure it with:
 
 - API audience/resource: `orders-api`
 - Scope or role: `orders.read`
-- Authority URL: `http://localhost:5001` (adjust to your local provider)
+- Authority URL: `https://localhost:5001` (adjust to your provider)
 
 Then run the Function:
 
 ```bash
-dotnet run --project modules/09-auth-oidc-oauth2/exercise/AuthOidcExercise.csproj
+dotnet run --project modules/09-auth/oidc-oauth/exercise/OidcOAuthExercise.csproj
 ```
 
-Get an access token from the local provider. The exact command depends on your IdentityServer client. For a client-credentials client it usually looks like:
+Obtain an access token from the provider. For a client-credentials client the
+request usually looks like:
 
 ```bash
-curl -X POST http://localhost:5001/connect/token   -H "Content-Type: application/x-www-form-urlencoded"   -d "grant_type=client_credentials"   -d "client_id=<client-id>"   -d "client_secret=<client-secret>"   -d "scope=orders.read"
+curl -X POST https://localhost:5001/connect/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id=<client-id>" \
+  -d "client_secret=<client-secret>" \
+  -d "scope=orders.read"
 ```
 
-Call the API:
+Call the API (curl sets the `Authorization` header from the token):
 
 ```bash
 curl http://localhost:7071/api/health
-curl http://localhost:7071/api/orders -H "Authorization: ******"
+curl --oauth2-bearer "$ACCESS_TOKEN" http://localhost:7071/api/orders
 ```
 
-`local.settings.json` includes placeholder local settings plus Entra ID examples. It uses `Auth:RequireHttpsMetadata=false` only because the local authority placeholder is HTTP.
+`local.settings.json` includes placeholder local settings. Set
+`Auth:RequireHttpsMetadata=true` whenever the authority is served over HTTPS.
 
-## Point it at Microsoft Entra ID for Azure
+## Switching providers
 
-1. Register an API app in Entra ID.
-2. Expose an API scope named `orders.read` or define an application role named `orders.read`.
-3. Register or choose a client app and grant it permission to request that scope/role.
-4. In the Azure Function app settings, set:
+Because every OIDC-compliant provider publishes the same discovery and JWKS
+metadata, you move between an ASP.NET Core Identity/OpenIddict host, a managed cloud
+identity provider, or any other compliant server by changing configuration only:
 
 ```text
-Auth:Authority=https://login.microsoftonline.com/<tenant-id>/v2.0
-Auth:Audience=api://<application-client-id>
+Auth:Authority=https://<your-authority>
+Auth:Audience=orders-api
 Auth:RequiredPermission=orders.read
 Auth:RequireHttpsMetadata=true
 ```
 
-No code changes are required because Entra ID also publishes OIDC discovery and JWKS signing keys.
+No code changes are required.
 
 ## Tests
 
 Run from the repository's `AzureFunctionsFundamentals` folder:
 
 ```bash
-dotnet test modules/09-auth-oidc-oauth2/exercise/tests/AuthOidcExercise.Tests.csproj
+dotnet test modules/09-auth/oidc-oauth/exercise/tests/OidcOAuthExercise.Tests.csproj
 ```
 
-The tests construct `ClaimsPrincipal` instances directly for scope decisions and generate RSA keys in memory for signed JWT validation. They do not call a network identity provider.
+The tests construct `ClaimsPrincipal` instances directly for scope decisions and
+generate RSA keys in memory for signed JWT validation. They do not call a network
+identity provider.

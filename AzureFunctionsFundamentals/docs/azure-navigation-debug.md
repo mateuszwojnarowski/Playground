@@ -336,7 +336,7 @@ Look in the resource group's **Activity log** for manual edits. Prefer redeployi
 
 ### 401/403 on protected endpoints
 
-This ties back to [module 09: Auth OIDC / OAuth2.0](../modules/09-auth-oidc-oauth2/).
+This ties back to [module 09: Auth (Basic / JWT / OIDC)](../modules/09-auth/).
 
 | Status | Meaning | Triage |
 |---|---|---|
@@ -526,4 +526,4 @@ az deployment group list \
 - [Application Insights and logging](app-insights-logging.md)
 - [GitHub Actions deployment tutorial](../deploy/github-actions-tutorial.md)
 - Bicep infrastructure templates in [`../deploy/bicep/`](../deploy/bicep/)
-- [Module 09: Auth OIDC / OAuth2.0](../modules/09-auth-oidc-oauth2/)
+- [Module 09: Auth (Basic / JWT / OIDC)](../modules/09-auth/)

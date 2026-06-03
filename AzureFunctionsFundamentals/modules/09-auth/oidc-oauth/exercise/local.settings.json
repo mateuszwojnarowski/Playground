@@ -3,11 +3,9 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "Auth:Authority": "http://localhost:5001",
+    "Auth:Authority": "https://localhost:5001",
     "Auth:Audience": "orders-api",
     "Auth:RequiredPermission": "orders.read",
-    "Auth:RequireHttpsMetadata": "false",
-    "Auth:EntraIdAuthorityExample": "https://login.microsoftonline.com/<tenant-id>/v2.0",
-    "Auth:EntraIdAudienceExample": "api://<application-client-id>"
+    "Auth:RequireHttpsMetadata": "false"
   }
 }
