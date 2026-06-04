@@ -16,15 +16,16 @@ public sealed class OrderPipelineFunction
         _logger = logger;
     }
 
+    // TODO: Implement the OrderPipelineFunction.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] to receive input.
+    // - Output: Use [ServiceBusOutput("orders-out", Connection = "ServiceBusConnection")] on the return or method.
+    // - Signature: Returns a string representing the serialized transformed order.
+    // - Logic: Deserialize the string to an Order object, invoke _transformer.Transform, serialize the transformed order, and log the route and idempotency key.
     [Function(nameof(OrderPipelineFunction))]
     [ServiceBusOutput("orders-out", Connection = "ServiceBusConnection")]
     public string Run([ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] string message)
     {
-        Order order = JsonSerializer.Deserialize<Order>(message)
-            ?? throw new InvalidOperationException("The Service Bus message did not contain a valid order.");
-
-        TransformedOrder transformed = _transformer.Transform(order);
-        _logger.LogInformation("Routed order {OrderId} to {Route}; idempotency key {IdempotencyKey}.", transformed.Id, transformed.Route, transformed.IdempotencyKey);
-        return JsonSerializer.Serialize(transformed);
+        throw new NotImplementedException("TODO: Implement the Service Bus Pipeline function according to the exercise guidelines.");
     }
 }

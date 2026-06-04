@@ -7,17 +7,18 @@ namespace AzureFunctionsFundamentals.Modules.CosmosDbServiceBusPipeline.Exercise
 
 public sealed class EnrichOrderFunction(CosmosOrderEnricher enricher, ILogger<EnrichOrderFunction> logger)
 {
+    // TODO: Implement the EnrichOrderFunction.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] to receive input message as a string.
+    // - Output: Use [CosmosDBOutput("LearningDb", "orders", Connection = "CosmosDbConnection")] on the method or return type to output the enriched order.
+    // - Signature: Returns a Task<EnrichedOrder> representing the async result.
+    // - Logic: Deserialize the Service Bus message string into an Order object, call enricher.EnrichAsync, log the details, and return the enriched order.
     [Function(nameof(EnrichOrderFunction))]
     [CosmosDBOutput("LearningDb", "orders", Connection = "CosmosDbConnection")]
-    public async Task<EnrichedOrder> RunAsync(
+    public Task<EnrichedOrder> RunAsync(
         [ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] string message,
         CancellationToken cancellationToken)
     {
-        var order = JsonSerializer.Deserialize<Order>(message)
-            ?? throw new InvalidOperationException("The Service Bus message did not contain a valid order.");
-
-        EnrichedOrder enriched = await enricher.EnrichAsync(order, cancellationToken);
-        logger.LogInformation("Enriched order {OrderId} for customer {CustomerId}.", enriched.Id, enriched.CustomerId);
-        return enriched;
+        throw new NotImplementedException("TODO: Implement the CosmosDB/ServiceBus pipeline enrichment function according to the exercise guidelines.");
     }
 }

@@ -13,25 +13,15 @@ public sealed class ReportsApiFunction(BasicAuthenticator authenticator)
         return new OkObjectResult(new { status = "ok" });
     }
 
+    // TODO: Implement the GetReports function.
+    // Hints:
+    // - Trigger: Use [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "reports")] to expose the GET endpoint.
+    // - Signature: Returns an IActionResult (such as OkObjectResult, UnauthorizedObjectResult, etc.).
+    // - Logic: Extract the Authorization header, pass it to basic authenticator, and return Unauthorized with WWW-Authenticate header if authentication fails. Return Ok with reports data if it succeeds.
     [Function("GetReports")]
     public IActionResult GetReports(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "reports")] HttpRequest request)
     {
-        var result = authenticator.Authenticate(request.Headers.Authorization.FirstOrDefault());
-        if (!result.Succeeded || result.Principal is null)
-        {
-            request.HttpContext.Response.Headers.WWWAuthenticate = "Basic realm=\"reports\", charset=\"UTF-8\"";
-            return new UnauthorizedObjectResult(new { error = result.Error });
-        }
-
-        return new OkObjectResult(new
-        {
-            owner = result.Principal.Identity?.Name,
-            reports = new[]
-            {
-                new { id = "R-1", title = "Q1 revenue" },
-                new { id = "R-2", title = "Open incidents" }
-            }
-        });
+        throw new NotImplementedException("TODO: Implement the Reports API function with Basic authentication according to the exercise guidelines.");
     }
 }

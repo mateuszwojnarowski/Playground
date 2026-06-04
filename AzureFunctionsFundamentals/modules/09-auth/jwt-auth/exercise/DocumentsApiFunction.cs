@@ -15,32 +15,15 @@ public sealed class DocumentsApiFunction(DocumentsAuthorizer authorizer, IConfig
         return new OkObjectResult(new { status = "ok" });
     }
 
+    // TODO: Implement the GetDocuments function.
+    // Hints:
+    // - Trigger: Use [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "documents")] to expose the GET endpoint.
+    // - Signature: Returns an IActionResult (such as OkObjectResult, UnauthorizedObjectResult, Forbidden, etc.).
+    // - Logic: Read the configuration to get the required role, authorize the request using the authorizer, and return the corresponding HTTP response (Unauthorized/Forbidden/Ok with documents list).
     [Function("GetDocuments")]
     public IActionResult GetDocuments(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "documents")] HttpRequest request)
     {
-        var requiredRole = configuration["Jwt:RequiredRole"] ?? "documents.read";
-        var result = authorizer.Authorize(request.Headers.Authorization.FirstOrDefault(), requiredRole);
-
-        if (result.Status == AuthorizationStatus.Unauthorized)
-        {
-            return new UnauthorizedObjectResult(new { error = result.Error });
-        }
-
-        if (result.Status == AuthorizationStatus.Forbidden)
-        {
-            return new ObjectResult(new { error = result.Error }) { StatusCode = StatusCodes.Status403Forbidden };
-        }
-
-        var principal = result.Principal!;
-        return new OkObjectResult(new
-        {
-            owner = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier),
-            documents = new[]
-            {
-                new { id = "DOC-1", title = "Onboarding guide" },
-                new { id = "DOC-2", title = "Runbook" }
-            }
-        });
+        throw new NotImplementedException("TODO: Implement the Documents API function with JWT authentication according to the exercise guidelines.");
     }
 }

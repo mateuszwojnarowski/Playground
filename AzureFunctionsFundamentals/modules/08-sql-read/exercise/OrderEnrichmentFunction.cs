@@ -16,17 +16,18 @@ public sealed class OrderEnrichmentFunction
         _logger = logger;
     }
 
+    // TODO: Implement the OrderEnrichmentFunction.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] to receive input message as a string.
+    // - Output: Use [ServiceBusOutput("orders-out", Connection = "ServiceBusConnection")] to output the enriched order string.
+    // - Signature: Returns a Task<string> representing the serialized enriched order.
+    // - Logic: Deserialize the string to an Order object, call _enricher.EnrichAsync, serialize the result, and log the enrichment details.
     [Function(nameof(OrderEnrichmentFunction))]
     [ServiceBusOutput("orders-out", Connection = "ServiceBusConnection")]
-    public async Task<string> RunAsync(
+    public Task<string> RunAsync(
         [ServiceBusTrigger("enrich-in", Connection = "ServiceBusConnection")] string message,
         CancellationToken cancellationToken)
     {
-        Order order = JsonSerializer.Deserialize<Order>(message)
-            ?? throw new InvalidOperationException("The Service Bus message did not contain a valid order.");
-
-        EnrichedOrder enriched = await _enricher.EnrichAsync(order, cancellationToken);
-        _logger.LogInformation("Enriched order {OrderId} with customer {CustomerId}.", enriched.Id, enriched.CustomerId);
-        return JsonSerializer.Serialize(enriched);
+        throw new NotImplementedException("TODO: Implement the SQL read-based enrichment function according to the exercise guidelines.");
     }
 }

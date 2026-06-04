@@ -16,15 +16,16 @@ public sealed class OrderQueueFunction
         _logger = logger;
     }
 
+    // TODO: Implement the OrderQueueFunction.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("orders", Connection = "ServiceBusConnection")] to receive the message as a string.
+    // - Parameter: Needs a string message and a CancellationToken.
+    // - Logic: Deserialize the string to an Order object, call _consumer.ProcessAsync, and log the processed order details.
     [Function(nameof(OrderQueueFunction))]
     public async Task RunAsync(
         [ServiceBusTrigger("orders", Connection = "ServiceBusConnection")] string message,
         CancellationToken cancellationToken)
     {
-        Order order = JsonSerializer.Deserialize<Order>(message)
-            ?? throw new InvalidOperationException("The Service Bus message did not contain a valid order.");
-
-        ProcessedOrder processed = await _consumer.ProcessAsync(order, cancellationToken);
-        _logger.LogInformation("Processed order {OrderId} for customer {CustomerId}; total {Total:C}.", processed.OrderId, processed.CustomerId, processed.Total);
+        throw new NotImplementedException("TODO: Implement the Service Bus Queue-triggered function according to the exercise guidelines.");
     }
 }

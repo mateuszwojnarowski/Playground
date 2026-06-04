@@ -15,35 +15,16 @@ public sealed class OrdersApiFunction(TokenAuthorizer authorizer, IOptions<AuthO
         return new OkObjectResult(new { status = "ok" });
     }
 
+    // TODO: Implement the GetOrdersAsync function.
+    // Hints:
+    // - Trigger: Use [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "orders")] to expose the GET endpoint.
+    // - Signature: Returns a Task<IActionResult> representing the async result (such as OkObjectResult, UnauthorizedObjectResult, Forbidden, etc.).
+    // - Logic: Read the required permission from configuration/options, authorize the bearer token using authorizer, and return the corresponding HTTP response.
     [Function("GetOrders")]
-    public async Task<IActionResult> GetOrdersAsync(
+    public Task<IActionResult> GetOrdersAsync(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "orders")] HttpRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await authorizer.AuthorizeBearerTokenAsync(
-            request.Headers.Authorization.FirstOrDefault(),
-            options.Value.RequiredPermission,
-            cancellationToken);
-
-        if (result.Status == AuthorizationStatus.Unauthorized)
-        {
-            return new UnauthorizedObjectResult(new { error = result.Error });
-        }
-
-        if (result.Status == AuthorizationStatus.Forbidden)
-        {
-            return new ObjectResult(new { error = result.Error }) { StatusCode = StatusCodes.Status403Forbidden };
-        }
-
-        var principal = result.Principal!;
-        return new OkObjectResult(new
-        {
-            caller = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier),
-            orders = new[]
-            {
-                new { id = "A100", customer = "Contoso", total = 123.45m },
-                new { id = "B200", customer = "Fabrikam", total = 67.89m }
-            }
-        });
+        throw new NotImplementedException("TODO: Implement the Orders API function with OIDC/OAuth authentication according to the exercise guidelines.");
     }
 }

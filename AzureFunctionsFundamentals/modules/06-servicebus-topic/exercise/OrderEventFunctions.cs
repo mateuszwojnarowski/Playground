@@ -21,22 +21,24 @@ public sealed class OrderEventFunctions
         _logger = logger;
     }
 
+    // TODO: Implement the AuditSubscriber function.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("order-events", "audit", Connection = "ServiceBusConnection")] to receive the audit topic message.
+    // - Logic: Deserialize the string to an Order object, invoke _auditHandler.Record, and log the audit entry details.
     [Function(nameof(AuditSubscriber))]
     public void AuditSubscriber([ServiceBusTrigger("order-events", "audit", Connection = "ServiceBusConnection")] string message)
     {
-        Order order = DeserializeOrder(message);
-        AuditEntry entry = _auditHandler.Record(order, DateTimeOffset.UtcNow);
-
-        _logger.LogInformation("Audit entry for order {OrderId}: {Description}", entry.OrderId, entry.Description);
+        throw new NotImplementedException("TODO: Implement the AuditSubscriber function according to the exercise guidelines.");
     }
 
+    // TODO: Implement the FulfilmentSubscriber function.
+    // Hints:
+    // - Trigger: Use [ServiceBusTrigger("order-events", "fulfilment", Connection = "ServiceBusConnection")] to receive the fulfilment topic message.
+    // - Logic: Deserialize the string to an Order object, invoke _fulfilmentHandler.Decide, and log the decision details.
     [Function(nameof(FulfilmentSubscriber))]
     public void FulfilmentSubscriber([ServiceBusTrigger("order-events", "fulfilment", Connection = "ServiceBusConnection")] string message)
     {
-        Order order = DeserializeOrder(message);
-        FulfilmentDecision decision = _fulfilmentHandler.Decide(order);
-
-        _logger.LogInformation("Fulfilment decision for order {OrderId}: ship={ShouldShip}; {Reason}", decision.OrderId, decision.ShouldShip, decision.Reason);
+        throw new NotImplementedException("TODO: Implement the FulfilmentSubscriber function according to the exercise guidelines.");
     }
 
     private static Order DeserializeOrder(string message)
