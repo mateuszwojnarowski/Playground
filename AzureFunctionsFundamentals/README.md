@@ -15,7 +15,8 @@ Everything targets **.NET 10** and the **isolated worker** model on Functions v4
    - a `README.md` explaining the concept and *why* it matters,
    - an `examples/` project — a minimal runnable sample,
    - an `exercise/` — a real-world scenario with **acceptance criteria** and a
-     **unit test** project (tests start red, pass when you implement the logic).
+     **unit test** project. Exercises start with failing tests, and you implement the
+     logic until the suite turns green.
 4. When you're ready for the cloud, follow `deploy/` and the observability docs.
 
 ## Prerequisites
@@ -41,6 +42,7 @@ Everything targets **.NET 10** and the **isolated worker** model on Functions v4
 | 10 | [Cosmos DB trigger](modules/10-cosmosdb-trigger/) | Cosmos change feed |
 | 11 | [Cosmos DB read/write](modules/11-cosmosdb-readwrite/) | Cosmos SDK |
 | 12 | [Cosmos DB + Service Bus pipeline](modules/12-cosmosdb-servicebus-pipeline/) | SB → Cosmos enrich |
+| 13 | [App Insights logging](modules/13-app-insights/) | Structured logging & telemetry |
 
 ## Operations & deployment
 - [Local setup](docs/local-setup.md)
@@ -53,8 +55,8 @@ Everything targets **.NET 10** and the **isolated worker** model on Functions v4
 ## Build & test everything
 ```bash
 cd AzureFunctionsFundamentals
-dotnet build AzureFunctionsFundamentals.sln
-dotnet test  AzureFunctionsFundamentals.sln
+dotnet build AzureFunctionsFundamentals.slnx
+dotnet test  AzureFunctionsFundamentals.slnx
 ```
 
 See [`CONVENTIONS.md`](CONVENTIONS.md) for pinned package versions and project

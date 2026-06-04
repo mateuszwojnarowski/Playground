@@ -138,6 +138,16 @@
   <Folder Name="/modules/12-cosmosdb-servicebus-pipeline/exercise/tests/">
     <Project Path="modules/12-cosmosdb-servicebus-pipeline/exercise/tests/CosmosDbServiceBusPipelineExercise.Tests.csproj" />
   </Folder>
+  <Folder Name="/modules/13-app-insights/" />
+  <Folder Name="/modules/13-app-insights/examples/">
+    <Project Path="modules/13-app-insights/examples/AppInsightsExamples.csproj" />
+  </Folder>
+  <Folder Name="/modules/13-app-insights/exercise/">
+    <Project Path="modules/13-app-insights/exercise/AppInsightsExercise.csproj" />
+  </Folder>
+  <Folder Name="/modules/13-app-insights/exercise/tests/">
+    <Project Path="modules/13-app-insights/exercise/tests/AppInsightsExercise.Tests.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Shared/Shared.csproj" />
   </Folder>

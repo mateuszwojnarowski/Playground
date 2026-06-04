@@ -10,46 +10,31 @@ public sealed class JobProcessor
         WriteIndented = true
     };
 
+    // TODO: Implement queue message processing.
+    // - Parse and validate the incoming job payload according to the module README.md.
+    // - Build the processed job model with the expected totals, lane selection, and timestamp.
+    // - Throw the documented exceptions for invalid messages.
     public ProcessedJob Process(string message)
     {
-        if (string.IsNullOrWhiteSpace(message))
-        {
-            throw new ArgumentException("Queue message must contain an order JSON document.", nameof(message));
-        }
-
-        var order = JsonSerializer.Deserialize<Order>(message, JsonOptions)
-            ?? throw new InvalidOperationException("Queue message did not contain a valid order.");
-
-        if (string.IsNullOrWhiteSpace(order.Id))
-        {
-            throw new InvalidOperationException("Order id is required.");
-        }
-
-        if (order.Quantity <= 0)
-        {
-            throw new InvalidOperationException("Order quantity must be greater than zero.");
-        }
-
-        if (order.UnitPrice < 0)
-        {
-            throw new InvalidOperationException("Order unit price cannot be negative.");
-        }
-
-        return new ProcessedJob(
-            order.Id,
-            order.CustomerId,
-            order.Product,
-            order.Quantity,
-            order.UnitPrice,
-            order.Total,
-            order.Total >= 100m ? "priority" : "standard",
-            DateTimeOffset.UtcNow);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement JSON projection for processed jobs.
+    // - Call Process(message) internally.
+    // - Serialize the returned ProcessedJob using JsonOptions.
+    // - See README.md for the expected JSON shape.
     public string ProcessToJson(string message)
     {
-        var result = Process(message);
-        return JsonSerializer.Serialize(result, JsonOptions);
+        throw new NotImplementedException("TODO: implement this method.");
+    }
+
+    // TODO: Implement CSV parsing for queue jobs.
+    // - Parse the CSV payload into Order values using the rules in README.md.
+    // - Validate headers and column values exactly as the exercise requires.
+    // - Return the parsed orders for Process to consume.
+    private static IEnumerable<Order> ParseCsv(string message)
+    {
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

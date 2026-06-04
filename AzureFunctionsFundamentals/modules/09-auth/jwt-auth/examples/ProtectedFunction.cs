@@ -2,10 +2,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 
 namespace AzureFunctionsFundamentals.Modules.Auth.JwtAuth.Examples;
 
-public sealed class ProtectedFunction(JwtTokenService tokenService)
+public sealed class ProtectedFunction(JwtTokenService tokenService, ILogger<ProtectedFunction> logger)
 {
     [Function("Protected")]
     public IActionResult Run(
@@ -14,13 +15,16 @@ public sealed class ProtectedFunction(JwtTokenService tokenService)
         var result = tokenService.Validate(request.Headers.Authorization.FirstOrDefault());
         if (!result.Succeeded || result.Principal is null)
         {
+            logger.LogWarning("Protected endpoint authorization failed.");
             return new UnauthorizedObjectResult(new { error = result.Error });
         }
 
         var principal = result.Principal;
+        var subject = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        logger.LogInformation("Protected endpoint authorized for subject {Subject}.", subject);
         return new OkObjectResult(new
         {
-            subject = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier),
+            subject,
             roles = principal.FindAll("role").Select(c => c.Value).ToArray()
         });
     }

@@ -4,19 +4,13 @@ namespace AzureFunctionsFundamentals.Modules.ServiceBusTopic;
 
 public sealed class FulfilmentHandler
 {
+    // TODO: Implement fulfilment decision logic.
+    // - Decide whether the order should ship and why, using the rules in README.md.
+    // - Handle invalid order data with the expected failure decision.
+    // - Return the correct FulfilmentDecision for the incoming event.
     public FulfilmentDecision Decide(Order order)
     {
-        if (order.Quantity <= 0 || string.IsNullOrWhiteSpace(order.Product))
-        {
-            return new FulfilmentDecision(order.Id, false, "Order is missing product or quantity details.");
-        }
-
-        if (order.Total >= 500m)
-        {
-            return new FulfilmentDecision(order.Id, true, "Priority shipping required for high-value order.");
-        }
-
-        return new FulfilmentDecision(order.Id, true, "Standard shipping approved.");
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

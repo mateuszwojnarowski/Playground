@@ -10,20 +10,12 @@ public sealed record OrderCreationResult(bool IsValid, Order? Order, IReadOnlyLi
 
 public sealed class OrderService(OrderValidator validator)
 {
+    // TODO: Implement order creation.
+    // - Validate the payload with OrderValidator and return Invalid(...) when errors exist.
+    // - Normalize the order data and assign an id when one is missing.
+    // - Return the created order exactly as described in README.md for this module.
     public OrderCreationResult Create(Order? order)
     {
-        var errors = validator.Validate(order);
-        if (errors.Count > 0)
-        {
-            return OrderCreationResult.Invalid(errors);
-        }
-
-        var created = order! with
-        {
-            Id = string.IsNullOrWhiteSpace(order.Id) ? Guid.NewGuid().ToString() : order.Id,
-            Product = order.Product.Trim()
-        };
-
-        return OrderCreationResult.Created(created);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }

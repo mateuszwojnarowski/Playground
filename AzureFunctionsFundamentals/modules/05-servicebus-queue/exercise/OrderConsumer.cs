@@ -11,17 +11,13 @@ public sealed class OrderConsumer
         _validator = validator;
     }
 
+    // TODO: Implement queue order consumption.
+    // - Respect cancellation, validate the order, and throw OrderValidationException when needed.
+    // - Return the processed order summary expected by the exercise tests.
+    // - Use README.md for the full acceptance criteria.
     public Task<ProcessedOrder> ProcessAsync(Order order, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        IReadOnlyList<string> errors = _validator.Validate(order);
-        if (errors.Count > 0)
-        {
-            throw new OrderValidationException(errors);
-        }
-
-        return Task.FromResult(new ProcessedOrder(order.Id, order.CustomerId, order.Total));
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

@@ -8,18 +8,12 @@ public sealed record CleanupSummary(DateTimeOffset Cutoff, int StaleOrderCount, 
 
 public sealed class OrderCleanupService(TimeProvider timeProvider)
 {
+    // TODO: Implement stale-order summarization.
+    // - Calculate the cutoff from the injected clock and staleAfter.
+    // - Select stale orders, count them, total their values, and return their ids in the required order.
+    // - Match the behavior described in README.md for this module.
     public CleanupSummary SummarizeStaleOrders(IEnumerable<OrderSnapshot> orders, TimeSpan staleAfter)
     {
-        var cutoff = timeProvider.GetUtcNow().Subtract(staleAfter);
-        var staleOrders = orders
-            .Where(order => order.LastUpdatedAt <= cutoff)
-            .OrderBy(order => order.LastUpdatedAt)
-            .ToList();
-
-        return new CleanupSummary(
-            cutoff,
-            staleOrders.Count,
-            staleOrders.Sum(order => order.Order.Total),
-            staleOrders.Select(order => order.Order.Id).ToArray());
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }

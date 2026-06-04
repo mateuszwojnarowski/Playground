@@ -3,18 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ServiceBusQueueExample;
 
-public sealed class OrderQueueLoggerFunction
+public sealed class OrderQueueLoggerFunction(ILogger<OrderQueueLoggerFunction> logger)
 {
-    private readonly ILogger<OrderQueueLoggerFunction> _logger;
-
-    public OrderQueueLoggerFunction(ILogger<OrderQueueLoggerFunction> logger)
-    {
-        _logger = logger;
-    }
-
     [Function(nameof(OrderQueueLoggerFunction))]
     public void Run([ServiceBusTrigger("orders", Connection = "ServiceBusConnection")] string message)
     {
-        _logger.LogInformation("Received order queue message: {Message}", message);
+        logger.LogInformation("Service Bus queue message received with {CharacterCount} characters.", message.Length);
     }
 }

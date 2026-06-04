@@ -5,37 +5,29 @@ using Microsoft.Extensions.Logging;
 
 namespace QueueTriggerExample;
 
-public sealed class QueueMessageLogger
+public sealed class QueueMessageLogger(ILogger<QueueMessageLogger> logger)
 {
-    private readonly ILogger<QueueMessageLogger> _logger;
-
-    public QueueMessageLogger(ILogger<QueueMessageLogger> logger)
-    {
-        _logger = logger;
-    }
-
     [Function(nameof(QueueMessageLogger))]
     public void Run(
         [QueueTrigger("incoming-jobs", Connection = "AzureWebJobsStorage")] string message)
     {
-        _logger.LogInformation("Received queue message: {Message}", message);
+        logger.LogInformation("Received queue message with {CharacterCount} characters.", message.Length);
 
         try
         {
             var order = JsonSerializer.Deserialize<Order>(message, JsonOptions.Default);
             if (order is not null)
             {
-                _logger.LogInformation(
-                    "Parsed order {OrderId}: {Quantity} x {Product} = {Total:C}",
+                logger.LogInformation(
+                    "Parsed order {OrderId} for customer {CustomerId} with total {Total}.",
                     order.Id,
-                    order.Quantity,
-                    order.Product,
+                    order.CustomerId,
                     order.Total);
             }
         }
         catch (JsonException)
         {
-            _logger.LogInformation("Message was not an Order JSON document; logged as plain text.");
+            logger.LogWarning("Queue message was not a valid Order JSON document.");
         }
     }
 }

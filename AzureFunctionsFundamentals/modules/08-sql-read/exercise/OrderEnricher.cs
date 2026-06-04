@@ -11,23 +11,13 @@ public sealed class OrderEnricher
         _customers = customers;
     }
 
+    // TODO: Implement order enrichment.
+    // - Validate the incoming order and load the matching customer from the repository.
+    // - Throw CustomerNotFoundException when the customer cannot be found.
+    // - Return the enriched order described in README.md for this module.
     public async Task<EnrichedOrder> EnrichAsync(Order order, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(order);
-
-        Customer customer = await _customers.GetByIdAsync(order.CustomerId, cancellationToken)
-            ?? throw new CustomerNotFoundException(order.CustomerId);
-
-        return new EnrichedOrder
-        {
-            Id = order.Id,
-            CustomerId = order.CustomerId,
-            CustomerName = customer.Name,
-            CustomerTier = customer.Tier,
-            Product = order.Product,
-            Quantity = order.Quantity,
-            Total = order.Total
-        };
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

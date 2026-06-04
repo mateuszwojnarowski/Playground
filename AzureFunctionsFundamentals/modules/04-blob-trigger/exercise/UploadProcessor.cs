@@ -11,67 +11,31 @@ public sealed class UploadProcessor
         WriteIndented = true
     };
 
+    // TODO: Implement blob upload transformation.
+    // - Parse and validate the CSV content according to README.md.
+    // - Build the ProcessedUpload summary with order count, revenue total, parsed orders, and timestamp.
+    // - Throw the documented exceptions when the upload is invalid.
     public ProcessedUpload Transform(string content, string fileName)
     {
-        if (string.IsNullOrWhiteSpace(content))
-        {
-            throw new ArgumentException("Upload content must not be empty.", nameof(content));
-        }
-
-        var orders = ParseCsv(content).ToArray();
-        if (orders.Length == 0)
-        {
-            throw new InvalidOperationException("Upload did not contain any orders.");
-        }
-
-        return new ProcessedUpload(
-            fileName,
-            orders.Length,
-            orders.Sum(order => order.Total),
-            orders,
-            DateTimeOffset.UtcNow);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement JSON projection for transformed uploads.
+    // - Call Transform(content, fileName) internally.
+    // - Serialize the returned ProcessedUpload using JsonOptions.
+    // - See README.md for the expected JSON shape.
     public string TransformToJson(string content, string fileName)
     {
-        var result = Transform(content, fileName);
-        return JsonSerializer.Serialize(result, JsonOptions);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement CSV parsing for blob uploads.
+    // - Validate the CSV header and parse each row into an Order.
+    // - Enforce the parsing rules and error cases described in README.md.
+    // - Return the parsed orders for Transform to consume.
     private static IEnumerable<Order> ParseCsv(string content)
     {
-        using var reader = new StringReader(content);
-        var header = reader.ReadLine();
-        if (!string.Equals(header?.Trim(), "id,customerId,product,quantity,unitPrice", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidOperationException("CSV header must be: id,customerId,product,quantity,unitPrice");
-        }
-
-        var lineNumber = 1;
-        string? line;
-        while ((line = reader.ReadLine()) is not null)
-        {
-            lineNumber++;
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                continue;
-            }
-
-            var columns = line.Split(',');
-            if (columns.Length != 5)
-            {
-                throw new InvalidOperationException($"Line {lineNumber} must contain 5 columns.");
-            }
-
-            yield return new Order
-            {
-                Id = columns[0].Trim(),
-                CustomerId = int.Parse(columns[1], CultureInfo.InvariantCulture),
-                Product = columns[2].Trim(),
-                Quantity = int.Parse(columns[3], CultureInfo.InvariantCulture),
-                UnitPrice = decimal.Parse(columns[4], CultureInfo.InvariantCulture)
-            };
-        }
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

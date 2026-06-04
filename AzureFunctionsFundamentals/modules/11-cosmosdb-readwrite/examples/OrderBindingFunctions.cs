@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
 
 namespace AzureFunctionsFundamentals.Modules.CosmosDbReadWrite.Examples;
 
-public sealed class OrderBindingFunctions
+public sealed class OrderBindingFunctions(ILogger<OrderBindingFunctions> logger)
 {
     [Function("CreateOrderWithBinding")]
     public async Task<CreateOrderOutput> CreateAsync(
@@ -16,10 +17,12 @@ public sealed class OrderBindingFunctions
         var order = await request.ReadFromJsonAsync<Order>(cancellationToken);
         if (order is null || order.CustomerId <= 0)
         {
+            logger.LogWarning("CreateOrderWithBinding received an invalid order payload.");
             return new CreateOrderOutput { HttpResponse = new BadRequestObjectResult(new { error = "A valid order payload is required." }) };
         }
 
         var document = order with { Id = string.IsNullOrWhiteSpace(order.Id) ? Guid.NewGuid().ToString() : order.Id };
+        logger.LogInformation("Creating order document {OrderId} for customer {CustomerId}.", document.Id, document.CustomerId);
         return new CreateOrderOutput
         {
             Order = document,
@@ -34,7 +37,14 @@ public sealed class OrderBindingFunctions
         int customerId,
         [CosmosDBInput("LearningDb", "orders", Connection = "CosmosDbConnection", Id = "{id}", PartitionKey = "{customerId}")] Order? order)
     {
-        return order is null ? new NotFoundResult() : new OkObjectResult(order);
+        if (order is null)
+        {
+            logger.LogWarning("Order {OrderId} for customer {CustomerId} was not found.", id, customerId);
+            return new NotFoundResult();
+        }
+
+        logger.LogInformation("Order {OrderId} for customer {CustomerId} was read with binding.", id, customerId);
+        return new OkObjectResult(order);
     }
 }
 

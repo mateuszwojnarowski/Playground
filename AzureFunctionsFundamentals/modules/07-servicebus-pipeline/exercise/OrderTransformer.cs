@@ -11,30 +11,21 @@ public sealed class OrderTransformer
         _clock = clock;
     }
 
+    // TODO: Implement order transformation.
+    // - Validate and normalize the incoming order according to README.md.
+    // - Calculate routing, timestamps, and idempotency values for the transformed message.
+    // - Return the fully populated TransformedOrder.
     public TransformedOrder Transform(Order order)
     {
-        ArgumentNullException.ThrowIfNull(order);
-
-        string normalizedProduct = NormalizeProduct(order.Product);
-        string route = order.Total >= 1_000m || order.Quantity >= 10 ? "priority" : "standard";
-
-        return new TransformedOrder
-        {
-            Id = order.Id,
-            CustomerId = order.CustomerId,
-            Product = normalizedProduct,
-            Quantity = order.Quantity,
-            UnitPrice = order.UnitPrice,
-            Total = order.Total,
-            Route = route,
-            ProcessingStamp = _clock.UtcNow,
-            IdempotencyKey = $"order:{order.Id}"
-        };
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement product normalization.
+    // - Normalize the product name exactly as the exercise requires.
+    // - Keep this helper aligned with the transformation rules in README.md.
     private static string NormalizeProduct(string product)
     {
-        return string.Join(' ', product.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

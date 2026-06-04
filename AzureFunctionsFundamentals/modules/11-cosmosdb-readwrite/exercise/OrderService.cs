@@ -4,48 +4,30 @@ namespace AzureFunctionsFundamentals.Modules.CosmosDbReadWrite.Exercise;
 
 public sealed class OrderService(IOrderRepository repository)
 {
+    // TODO: Implement order persistence.
+    // - Validate and normalize the incoming order.
+    // - Upsert through the repository and report whether the order was newly created.
+    // - Match the save behavior documented in README.md for this module.
     public async Task<SaveOrderResult> SaveAsync(Order? order, CancellationToken cancellationToken = default)
     {
-        var errors = Validate(order);
-        if (errors.Count > 0)
-        {
-            return SaveOrderResult.Invalid(errors);
-        }
-
-        Order normalized = order! with
-        {
-            Id = string.IsNullOrWhiteSpace(order.Id) ? Guid.NewGuid().ToString() : order.Id.Trim(),
-            Product = order.Product.Trim()
-        };
-
-        bool existed = await repository.GetAsync(normalized.Id, normalized.CustomerId, cancellationToken) is not null;
-        Order saved = await repository.UpsertAsync(normalized, cancellationToken);
-        return SaveOrderResult.Saved(saved, !existed);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement customer order queries.
+    // - Validate the customer id and return Invalid(...) for bad input.
+    // - Query the repository and return the expected QueryOrdersResult.
+    // - Follow README.md for this module.
     public async Task<QueryOrdersResult> QueryByCustomerAsync(int customerId, CancellationToken cancellationToken = default)
     {
-        if (customerId <= 0)
-        {
-            return QueryOrdersResult.Invalid(["CustomerId must be greater than zero."]);
-        }
-
-        return QueryOrdersResult.Found(await repository.QueryByCustomerAsync(customerId, cancellationToken));
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement order validation.
+    // - Return the validation errors required by README.md when the payload is missing or invalid.
+    // - Collect all relevant validation errors for SaveAsync.
     private static IReadOnlyList<string> Validate(Order? order)
     {
-        if (order is null)
-        {
-            return ["Order payload is required."];
-        }
-
-        var errors = new List<string>();
-        if (order.CustomerId <= 0) errors.Add("CustomerId must be greater than zero.");
-        if (string.IsNullOrWhiteSpace(order.Product)) errors.Add("Product is required.");
-        if (order.Quantity <= 0) errors.Add("Quantity must be greater than zero.");
-        if (order.UnitPrice <= 0) errors.Add("UnitPrice must be greater than zero.");
-        return errors;
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

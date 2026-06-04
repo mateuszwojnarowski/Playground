@@ -16,28 +16,13 @@ public sealed class AuditProjector
         _clock = clock;
     }
 
+    // TODO: Implement Cosmos audit projection.
+    // - Validate the incoming order according to README.md.
+    // - Project the order into the audit document shape and timestamp it with the injected clock.
+    // - Return the OrderAuditProjection expected by the tests.
     public OrderAuditProjection Project(Order order)
     {
-        if (order.CustomerId <= 0)
-        {
-            throw new ArgumentException("CustomerId must be greater than zero.", nameof(order));
-        }
-
-        if (string.IsNullOrWhiteSpace(order.Id))
-        {
-            throw new ArgumentException("Order Id is required.", nameof(order));
-        }
-
-        return new OrderAuditProjection
-        {
-            Id = $"{order.Id}:audit",
-            OrderId = order.Id,
-            CustomerId = order.CustomerId,
-            Product = order.Product.Trim(),
-            Quantity = order.Quantity,
-            Total = order.Total,
-            LastSeenUtc = _clock()
-        };
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }
 

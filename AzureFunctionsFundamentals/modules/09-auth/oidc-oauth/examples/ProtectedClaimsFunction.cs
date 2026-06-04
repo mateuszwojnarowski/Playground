@@ -2,10 +2,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
 
 namespace AzureFunctionsFundamentals.Modules.Auth.OidcOAuth.Examples;
 
-public sealed class ProtectedClaimsFunction(ITokenValidator tokenValidator)
+public sealed class ProtectedClaimsFunction(ITokenValidator tokenValidator, ILogger<ProtectedClaimsFunction> logger)
 {
     [Function("ProtectedClaims")]
     public async Task<IActionResult> RunAsync(
@@ -15,15 +16,19 @@ public sealed class ProtectedClaimsFunction(ITokenValidator tokenValidator)
         var validation = await tokenValidator.ValidateAsync(request.Headers.Authorization.FirstOrDefault(), cancellationToken);
         if (!validation.Succeeded || validation.Principal is null)
         {
+            logger.LogWarning("OIDC claims request failed authorization.");
             return new UnauthorizedObjectResult(new { error = validation.Error });
         }
 
         var principal = validation.Principal;
+        var subject = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        var scopes = ScopeReader.ReadScopes(principal);
+        logger.LogInformation("OIDC claims returned for subject {Subject} with {ScopeCount} scopes.", subject, scopes.Length);
         return new OkObjectResult(new
         {
-            subject = principal.FindFirstValue("sub") ?? principal.FindFirstValue(ClaimTypes.NameIdentifier),
+            subject,
             name = principal.FindFirstValue("name") ?? principal.Identity?.Name,
-            scopes = ScopeReader.ReadScopes(principal),
+            scopes,
             roles = principal.FindAll("role").Select(c => c.Value).ToArray()
         });
     }

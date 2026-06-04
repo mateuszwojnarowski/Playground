@@ -28,28 +28,20 @@ public sealed record AuthorizationResult(AuthorizationStatus Status, ClaimsPrinc
 /// </summary>
 public sealed class DocumentsAuthorizer(JwtTokenService tokenService)
 {
+    // TODO: Implement JWT authorization.
+    // - Validate the bearer token with JwtTokenService.
+    // - Return Unauthorized when token validation fails.
+    // - Delegate successful principals to AuthorizeClaims, following README.md.
     public AuthorizationResult Authorize(string? authorizationHeader, string requiredRole)
     {
-        var validation = tokenService.Validate(authorizationHeader);
-        if (!validation.Succeeded || validation.Principal is null)
-        {
-            return new AuthorizationResult(AuthorizationStatus.Unauthorized, null, validation.Error);
-        }
-
-        return AuthorizeClaims(validation.Principal, requiredRole);
+        throw new NotImplementedException("TODO: implement this method.");
     }
 
+    // TODO: Implement JWT claim authorization.
+    // - Check the principal for the required role using the accepted claim types.
+    // - Return Authorized or Forbidden with the expected error details from README.md.
     public AuthorizationResult AuthorizeClaims(ClaimsPrincipal principal, string requiredRole)
     {
-        var hasRole = principal.FindAll("role")
-            .Concat(principal.FindAll(ClaimTypes.Role))
-            .Any(c => string.Equals(c.Value, requiredRole, StringComparison.OrdinalIgnoreCase));
-
-        return hasRole
-            ? new AuthorizationResult(AuthorizationStatus.Authorized, principal, null)
-            : new AuthorizationResult(
-                AuthorizationStatus.Forbidden,
-                principal,
-                $"The token is valid but does not contain the required '{requiredRole}' role.");
+        throw new NotImplementedException("TODO: implement this method.");
     }
 }

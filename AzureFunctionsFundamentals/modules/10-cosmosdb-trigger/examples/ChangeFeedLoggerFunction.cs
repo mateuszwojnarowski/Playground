@@ -16,6 +16,8 @@ public sealed class ChangeFeedLoggerFunction(ILogger<ChangeFeedLoggerFunction> l
             CreateLeaseContainerIfNotExists = true)]
         IReadOnlyList<Order> orders)
     {
+        logger.LogInformation("Cosmos change feed delivered {OrderCount} order documents.", orders.Count);
+
         foreach (var order in orders)
         {
             logger.LogInformation("Order {OrderId} for customer {CustomerId} changed; total {Total}.", order.Id, order.CustomerId, order.Total);

@@ -14,8 +14,8 @@ public sealed class ServiceBusToCosmosFunction(ILogger<ServiceBusToCosmosFunctio
         var order = JsonSerializer.Deserialize<Order>(message)
             ?? throw new InvalidOperationException("The message did not contain a valid order.");
 
-        logger.LogInformation("Writing minimal enriched order for {OrderId}.", order.Id);
-        return new EnrichedOrder
+        logger.LogInformation("Preparing enriched order {OrderId} for customer {CustomerId}.", order.Id, order.CustomerId);
+        var enrichedOrder = new EnrichedOrder
         {
             Id = order.Id,
             CustomerId = order.CustomerId,
@@ -25,5 +25,8 @@ public sealed class ServiceBusToCosmosFunction(ILogger<ServiceBusToCosmosFunctio
             Quantity = order.Quantity,
             Total = order.Total
         };
+
+        logger.LogInformation("Writing enriched order {OrderId} to Cosmos DB output.", order.Id);
+        return enrichedOrder;
     }
 }

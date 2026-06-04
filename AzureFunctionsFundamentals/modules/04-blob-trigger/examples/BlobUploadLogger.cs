@@ -3,20 +3,13 @@ using Microsoft.Extensions.Logging;
 
 namespace BlobTriggerExample;
 
-public sealed class BlobUploadLogger
+public sealed class BlobUploadLogger(ILogger<BlobUploadLogger> logger)
 {
-    private readonly ILogger<BlobUploadLogger> _logger;
-
-    public BlobUploadLogger(ILogger<BlobUploadLogger> logger)
-    {
-        _logger = logger;
-    }
-
     [Function(nameof(BlobUploadLogger))]
     public void Run(
         [BlobTrigger("uploads/{name}", Connection = "AzureWebJobsStorage")] Stream blob,
         string name)
     {
-        _logger.LogInformation("Blob uploaded: {Name}, size: {Size} bytes", name, blob.Length);
+        logger.LogInformation("Blob upload received for {BlobName} with size {BlobSizeBytes} bytes.", name, blob.Length);
     }
 }
