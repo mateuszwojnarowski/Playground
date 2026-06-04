@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SqlReadExample;
 
 var builder = FunctionsApplication.CreateBuilder(args);
-builder.ConfigureFunctionsWebApplication();
 
 builder.Services.AddApplicationInsightsTelemetryWorkerService();
 
