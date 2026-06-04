@@ -1,25 +1,134 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AzureFunctionsFundamentals.Modules.AppInsights.Exercise;
 using AzureFunctionsFundamentals.Shared;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace AzureFunctionsFundamentals.Modules.AppInsights.Exercise.Tests;
 
-internal sealed class FakeTelemetryChannel : ITelemetryChannel
+internal sealed class FakeTelemetryChannel : IDisposable
 {
-    private readonly List<ITelemetry> _items = [];
+    private readonly ConcurrentBag<ITelemetry> _items = [];
+    private readonly ActivityListener _activityListener;
+    private readonly MeterListener _meterListener;
 
-    public IReadOnlyList<ITelemetry> Items => _items.AsReadOnly();
-    public bool? DeveloperMode { get; set; }
-    public string? EndpointAddress { get; set; }
+    public IReadOnlyList<ITelemetry> Items => _items.ToList().AsReadOnly();
 
-    public void Send(ITelemetry item) => _items.Add(item);
-    public void Flush() { }
-    public void Dispose() { }
+    public FakeTelemetryChannel(TelemetryConfiguration config)
+    {
+        // 1. Hook up ActivityListener to intercept dependencies
+        _activityListener = new ActivityListener
+        {
+            ShouldListenTo = (source) => source.Name == "Microsoft.ApplicationInsights",
+            Sample = (ref ActivityCreationOptions<ActivityContext> options) => ActivitySamplingResult.AllData,
+            ActivityStopped = (activity) =>
+            {
+                var name = activity.Tags.FirstOrDefault(t => t.Key == "microsoft.dependency.name").Value ?? activity.DisplayName;
+                var type = activity.Tags.FirstOrDefault(t => t.Key == "microsoft.dependency.type").Value ?? "Dependency";
+                var data = activity.Tags.FirstOrDefault(t => t.Key == "microsoft.dependency.data").Value;
+                var success = activity.Status != ActivityStatusCode.Error;
+
+                var dep = new DependencyTelemetry
+                {
+                    Name = name,
+                    Type = type,
+                    Data = data,
+                    Success = success,
+                    Duration = activity.Duration
+                };
+                _items.Add(dep);
+            }
+        };
+        ActivitySource.AddActivityListener(_activityListener);
+
+        // 2. Hook up MeterListener to intercept metrics
+        _meterListener = new MeterListener
+        {
+            InstrumentPublished = (instrument, listener) =>
+            {
+                if (instrument.Meter.Name == "Microsoft.ApplicationInsights")
+                {
+                    listener.EnableMeasurementEvents(instrument, null);
+                }
+            }
+        };
+        _meterListener.SetMeasurementEventCallback<double>((instrument, value, tags, state) =>
+        {
+            var metric = new MetricTelemetry(instrument.Name, value);
+            _items.Add(metric);
+        });
+        _meterListener.SetMeasurementEventCallback<int>((instrument, value, tags, state) =>
+        {
+            var metric = new MetricTelemetry(instrument.Name, value);
+            _items.Add(metric);
+        });
+        _meterListener.SetMeasurementEventCallback<long>((instrument, value, tags, state) =>
+        {
+            var metric = new MetricTelemetry(instrument.Name, value);
+            _items.Add(metric);
+        });
+        _meterListener.Start();
+
+        // 3. Hook up OpenTelemetry logger provider to intercept custom events
+        config.ConfigureOpenTelemetryBuilder(builder =>
+        {
+            builder.Services.AddSingleton<ILoggerProvider>(new FakeEventLoggerProvider(this));
+        });
+    }
+
+    public void AddEvent(EventTelemetry ev)
+    {
+        _items.Add(ev);
+    }
+
+    public void Dispose()
+    {
+        _activityListener.Dispose();
+        _meterListener.Dispose();
+    }
+
+    private class FakeEventLoggerProvider(FakeTelemetryChannel channel) : ILoggerProvider
+    {
+        public ILogger CreateLogger(string categoryName) => new FakeEventLogger(channel);
+        public void Dispose() { }
+    }
+
+    private class FakeEventLogger(FakeTelemetryChannel channel) : ILogger
+    {
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public bool IsEnabled(LogLevel logLevel) => true;
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (state is IEnumerable<KeyValuePair<string, object>> kvps)
+            {
+                var dict = kvps.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.ToString() ?? string.Empty);
+                if (dict.TryGetValue("microsoft.custom_event.name", out var eventName))
+                {
+                    var ev = new EventTelemetry { Name = eventName };
+                    foreach (var kvp in dict)
+                    {
+                        if (kvp.Key != "microsoft.custom_event.name" && kvp.Key != "{OriginalFormat}")
+                        {
+                            ev.Properties[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    channel.AddEvent(ev);
+                }
+            }
+        }
+    }
 }
 
 internal sealed class FakeLogEntry
@@ -40,6 +149,7 @@ internal sealed class FakeLogger<T> : ILogger<T>
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
         var dict = state as IReadOnlyDictionary<string, object?>
+            ?? (state as IEnumerable<KeyValuePair<string, object?>>)?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
             ?? new Dictionary<string, object?> { ["state"] = state };
         _scopeStack.Push(dict);
         return new ScopeHandle(() => _scopeStack.TryPop(out _));
@@ -65,18 +175,25 @@ internal sealed class FakeLogger<T> : ILogger<T>
     }
 }
 
-public sealed class OrderTelemetryServiceTests
+public sealed class OrderTelemetryServiceTests : IDisposable
 {
-    private readonly FakeTelemetryChannel _channel = new();
+    private readonly FakeTelemetryChannel _channel;
     private readonly TelemetryClient _telemetry;
     private readonly FakeLogger<OrderTelemetryService> _logger = new();
     private readonly OrderTelemetryService _service;
 
     public OrderTelemetryServiceTests()
     {
-        var config = new TelemetryConfiguration { TelemetryChannel = _channel };
+        var config = new TelemetryConfiguration();
+        config.ConnectionString = "InstrumentationKey=00000000-0000-0000-0000-000000000000";
+        _channel = new FakeTelemetryChannel(config);
         _telemetry = new TelemetryClient(config);
         _service = new OrderTelemetryService(_logger, _telemetry);
+    }
+
+    public void Dispose()
+    {
+        _channel.Dispose();
     }
 
     [Fact]
@@ -132,7 +249,7 @@ public sealed class OrderTelemetryServiceTests
         Assert.Contains(metrics, m => m.Name == "OrderValue");
 
         var metric = metrics.First(m => m.Name == "OrderValue");
-        Assert.Equal((double)order.Total, metric.Sum);
+        Assert.Equal((double)order.Total, metric.Value);
     }
 
     [Fact]
