@@ -27,7 +27,7 @@ public sealed class OrderQueueFunctionTests
 
         var triggerAttr = parameter.GetCustomAttribute<ServiceBusTriggerAttribute>();
         Assert.NotNull(triggerAttr);
-        Assert.Equal("orders", triggerAttr.QueueOrTopicName);
+        Assert.Equal("orders", triggerAttr.QueueName);
         Assert.Equal("ServiceBusConnection", triggerAttr.Connection);
     }
 

@@ -30,14 +30,14 @@ public sealed class OrderPipelineFunctionTests
 
         var triggerAttr = parameter.GetCustomAttribute<ServiceBusTriggerAttribute>();
         Assert.NotNull(triggerAttr);
-        Assert.Equal("enrich-in", triggerAttr.QueueOrTopicName);
+        Assert.Equal("enrich-in", triggerAttr.QueueName);
         Assert.Equal("ServiceBusConnection", triggerAttr.Connection);
     }
 
     [Fact]
     public void Run_ThrowsNotImplementedException_Initially()
     {
-        var transformer = new OrderTransformer(TimeProvider.System);
+        var transformer = new OrderTransformer(new SystemProcessingClock());
         var function = new OrderPipelineFunction(transformer, NullLogger<OrderPipelineFunction>.Instance);
         Assert.Throws<NotImplementedException>(() => function.Run("{}"));
     }

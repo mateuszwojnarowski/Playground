@@ -26,7 +26,7 @@ public sealed class OrderEventFunctionsTests
 
         var auditTriggerAttr = auditParam.GetCustomAttribute<ServiceBusTriggerAttribute>();
         Assert.NotNull(auditTriggerAttr);
-        Assert.Equal("order-events", auditTriggerAttr.QueueOrTopicName);
+        Assert.Equal("order-events", auditTriggerAttr.TopicName);
         Assert.Equal("audit", auditTriggerAttr.SubscriptionName);
         Assert.Equal("ServiceBusConnection", auditTriggerAttr.Connection);
 
@@ -43,7 +43,7 @@ public sealed class OrderEventFunctionsTests
 
         var fulfilmentTriggerAttr = fulfilmentParam.GetCustomAttribute<ServiceBusTriggerAttribute>();
         Assert.NotNull(fulfilmentTriggerAttr);
-        Assert.Equal("order-events", fulfilmentTriggerAttr.QueueOrTopicName);
+        Assert.Equal("order-events", fulfilmentTriggerAttr.TopicName);
         Assert.Equal("fulfilment", fulfilmentTriggerAttr.SubscriptionName);
         Assert.Equal("ServiceBusConnection", fulfilmentTriggerAttr.Connection);
     }

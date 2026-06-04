@@ -30,15 +30,23 @@ public sealed class OrderEnrichmentFunctionTests
 
         var triggerAttr = parameter.GetCustomAttribute<ServiceBusTriggerAttribute>();
         Assert.NotNull(triggerAttr);
-        Assert.Equal("enrich-in", triggerAttr.QueueOrTopicName);
+        Assert.Equal("enrich-in", triggerAttr.QueueName);
         Assert.Equal("ServiceBusConnection", triggerAttr.Connection);
     }
 
     [Fact]
     public async Task RunAsync_ThrowsNotImplementedException_Initially()
     {
-        var enricher = new OrderEnricher(new CustomerRepository(new FakeDbConnectionFactory()));
+        var enricher = new OrderEnricher(new FakeCustomerRepository());
         var function = new OrderEnrichmentFunction(enricher, NullLogger<OrderEnrichmentFunction>.Instance);
         await Assert.ThrowsAsync<NotImplementedException>(() => function.RunAsync("{}", CancellationToken.None));
+    }
+
+    private sealed class FakeCustomerRepository : ICustomerRepository
+    {
+        public Task<Customer?> GetByIdAsync(int customerId, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<Customer?>(null);
+        }
     }
 }

@@ -67,4 +67,14 @@ public sealed class ReportsApiFunctionTests
         var result = function.Health(context.Request);
         Assert.IsType<OkObjectResult>(result);
     }
+
+    private sealed class InMemoryCredentialStore(IReadOnlyDictionary<string, string> credentials) : ICredentialStore
+    {
+        public bool TryGetExpectedPassword(string username, out string? password)
+        {
+            var found = credentials.TryGetValue(username, out var value);
+            password = value;
+            return found;
+        }
+    }
 }

@@ -50,7 +50,7 @@ public sealed class DocumentsApiFunctionTests
     [Fact]
     public void GetDocuments_ThrowsNotImplementedException_Initially()
     {
-        var options = Options.Create(new JwtOptions { Issuer = "iss", Audience = "aud", Secret = "secretkey12345678" });
+        var options = Options.Create(new JwtOptions { Issuer = "iss", Audience = "aud", SigningKey = "super_secret_key_that_is_at_least_32_bytes_long_12345" });
         var tokenService = new JwtTokenService(options);
         var authorizer = new DocumentsAuthorizer(tokenService);
         var config = new ConfigurationBuilder().Build();
@@ -63,7 +63,7 @@ public sealed class DocumentsApiFunctionTests
     [Fact]
     public void Health_ReturnsOk()
     {
-        var options = Options.Create(new JwtOptions { Issuer = "iss", Audience = "aud", Secret = "secretkey12345678" });
+        var options = Options.Create(new JwtOptions { Issuer = "iss", Audience = "aud", SigningKey = "super_secret_key_that_is_at_least_32_bytes_long_12345" });
         var tokenService = new JwtTokenService(options);
         var authorizer = new DocumentsAuthorizer(tokenService);
         var config = new ConfigurationBuilder().Build();

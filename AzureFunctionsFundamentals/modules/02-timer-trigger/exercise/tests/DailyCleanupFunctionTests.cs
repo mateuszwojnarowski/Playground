@@ -25,7 +25,7 @@ public sealed class DailyCleanupFunctionTests
 
         var triggerAttr = parameter.GetCustomAttribute<TimerTriggerAttribute>();
         Assert.NotNull(triggerAttr);
-        Assert.Equal("0 0 2 * * *", triggerAttr.ScheduleExpression);
+        Assert.Equal("0 0 2 * * *", triggerAttr.Schedule);
     }
 
     [Fact]
