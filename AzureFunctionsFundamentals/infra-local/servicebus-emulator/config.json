@@ -1,5 +1,5 @@
-# Service Bus emulator topology. Entities here are created automatically when the
-# emulator container starts. Names must match AzureFunctionsFundamentals/CONVENTIONS.md.
+// Service Bus emulator topology. Entities here are created automatically when the
+// emulator container starts. Names must match AzureFunctionsFundamentals/CONVENTIONS.md.
 {
   "UserConfig": {
     "Namespaces": [

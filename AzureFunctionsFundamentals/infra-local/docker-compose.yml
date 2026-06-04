@@ -1,12 +1,9 @@
-version: "3.9"
-
 # Local learning stack for AzureFunctionsFundamentals.
 #
 #   docker compose up -d
 #
 # Services:
 #   azurite    - Blob/Queue/Table storage emulator      (ports 10000-10002)
-#   sqledge    - SQL backend required by the SB emulator (internal)
 #   servicebus - Azure Service Bus emulator              (port 5672)
 #   sqlserver  - SQL Server for the DB-read module       (port 1433)
 #   cosmosdb   - Azure Cosmos DB Linux emulator          (port 8081, 10250-10255)
@@ -26,32 +23,25 @@ services:
     volumes:
       - azurite-data:/data
 
-  sqledge:
-    image: mcr.microsoft.com/azure-sql-edge:latest
-    container_name: aff-sqledge
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Your_password123!"
-    # Used internally by the Service Bus emulator. Not exposed on the host to
-    # avoid clashing with the sqlserver service below.
-
   servicebus:
     image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    platform: linux/amd64
     container_name: aff-servicebus
     depends_on:
-      - sqledge
+      - sqlserver
     ports:
       - "5672:5672"
       - "5300:5300"
     environment:
       ACCEPT_EULA: "Y"
-      SQL_SERVER: sqledge
+      SQL_SERVER: sqlserver
       MSSQL_SA_PASSWORD: "Your_password123!"
     volumes:
       - ./servicebus-emulator/config.json:/ServiceBus_Emulator/ConfigFiles/Config.json
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
     container_name: aff-sqlserver
     environment:
       ACCEPT_EULA: "Y"
@@ -63,6 +53,7 @@ services:
 
   cosmosdb:
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    platform: linux/amd64
     container_name: aff-cosmosdb
     environment:
       AZURE_COSMOS_EMULATOR_PARTITION_COUNT: "3"
