@@ -8,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 
+// Register typed HTTP client for ProductService communication
+builder.Services.AddHttpClient("ProductService", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ProductsApiUrl"] ?? throw new InvalidOperationException("ProductsApiUrl not configured"));
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
     .Enrich.FromLogContext()

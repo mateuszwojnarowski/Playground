@@ -14,9 +14,14 @@ namespace OrderService.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class OrdersController(OrderContext context, IConfiguration configuration) : ControllerBase
+public class OrdersController(
+    OrderContext context,
+    IHttpClientFactory httpClientFactory,
+    ILogger<OrdersController> logger) : ControllerBase
 {
     private readonly OrderContext _context = context;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly ILogger<OrdersController> _logger = logger;
 
     [HttpGet]
     [Authorize("Order View")]
@@ -57,64 +62,169 @@ public class OrdersController(OrderContext context, IConfiguration configuration
     [Authorize("Order Edit")]
     public async Task<ActionResult<Order>> PostOrder(Order order)
     {
-        using var httpClient = new HttpClient();
-        httpClient.BaseAddress = new
-            Uri(configuration["ProductsApiUrl"] ?? string.Empty);
+        _logger.LogInformation("Starting order creation with {ItemCount} items", order.OrderDetails.Count());
 
-        // pass the token to this request
-        httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", Request.Headers["Authorization"].ToString().Split(" ")[1]);
-        var response = await httpClient.GetAsync("products");
-
-        List<Product>? products = null;
-        if (response.IsSuccessStatusCode)
+        // Get HTTP client from factory (proper pattern - reuses connections)
+        var httpClient = _httpClientFactory.CreateClient("ProductService");
+        
+        // Extract and pass the bearer token
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
         {
-            var json = await response.Content.ReadAsStringAsync();
-            products = JsonConvert.DeserializeObject<List<Product>>(json);
+            _logger.LogWarning("Missing or invalid authorization header");
+            return Unauthorized("Missing authorization token");
         }
+        
+        var token = authHeader.Split(" ")[1];
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        if (products is null)
+        // Step 1: Fetch only the products we need (not all products)
+        var productIds = order.OrderDetails.Select(x => x.ProductId).Distinct().ToList();
+        var products = new List<Product>();
+        
+        try
         {
-            return BadRequest("Could not get products.");
-        }
-
-        var orderedProducts = products.Where(x => order.OrderDetails.Any(y => y.ProductId == x.Id)).ToArray();
-
-        if (orderedProducts is null or [] || order.OrderDetails.Count() > orderedProducts.Length)
-        {
-            return BadRequest("Could not find all ordered products.");
-        }
-
-        bool isError = false;
-        List<(HttpStatusCode code, HttpContent content)> errors = [];
-
-        foreach (var orderedProduct in orderedProducts)
-        {
-            orderedProduct.StockQuantity -= order.OrderDetails.Single(x => x.ProductId == orderedProduct.Id).Quantity;
-            if (orderedProduct.StockQuantity < 0)
+            foreach (var productId in productIds)
             {
-                return BadRequest($"Not enough stock of {orderedProduct.Name}");
-            }
-
-            // very inefficient but cannae be arsed to do it properly for this play example
-            response = await httpClient.PutAsync($"products/{orderedProduct.Id}/{orderedProduct.StockQuantity}", null);
-
-            if (response.StatusCode != HttpStatusCode.NoContent)
-            {
-                isError = true;
-                errors.Add((response.StatusCode, response.Content));
+                var response = await httpClient.GetAsync($"products/{productId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var product = JsonConvert.DeserializeObject<Product>(json);
+                    if (product != null)
+                    {
+                        products.Add(product);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("Product {ProductId} not found", productId);
+                }
             }
         }
-
-        if (isError)
+        catch (Exception ex)
         {
-            return BadRequest(errors);
+            _logger.LogError(ex, "Failed to fetch product information");
+            return StatusCode(503, "Product service unavailable");
         }
 
-        _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
+        // Step 2: Validate all products exist
+        if (products.Count != productIds.Count)
+        {
+            var missingIds = productIds.Except(products.Select(p => p.Id)).ToList();
+            _logger.LogWarning("Missing products: {MissingIds}", string.Join(", ", missingIds));
+            return BadRequest($"Products not found: {string.Join(", ", missingIds)}");
+        }
 
-        return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        // Step 3: Validate stock availability and capture prices
+        var stockValidation = new List<(Product product, int requestedQty, long newStock)>();
+        
+        foreach (var orderItem in order.OrderDetails)
+        {
+            var product = products.First(p => p.Id == orderItem.ProductId);
+            var requestedQty = orderItem.Quantity;
+            var newStock = product.StockQuantity - requestedQty;
+
+            if (newStock < 0)
+            {
+                _logger.LogWarning("Insufficient stock for {ProductName}. Available: {Available}, Requested: {Requested}",
+                    product.Name, product.StockQuantity, requestedQty);
+                return BadRequest($"Insufficient stock for {product.Name}. Available: {product.StockQuantity}, Requested: {requestedQty}");
+            }
+
+            // CRITICAL: Capture the current product price in the order
+            orderItem.SoldAtUnitPrice = product.Cost;
+            
+            stockValidation.Add((product, requestedQty, newStock));
+        }
+
+        // Step 4: Update stock with compensating transaction support
+        var successfulUpdates = new List<(Guid productId, long originalStock)>();
+        
+        try
+        {
+            foreach (var (product, requestedQty, newStock) in stockValidation)
+            {
+                _logger.LogInformation("Reducing stock for {ProductName} from {OldStock} to {NewStock}",
+                    product.Name, product.StockQuantity, newStock);
+
+                var response = await httpClient.PutAsync($"products/{product.Id}/{newStock}", null);
+
+                if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotModified)
+                {
+                    // Track successful update for potential rollback
+                    successfulUpdates.Add((product.Id, product.StockQuantity));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Failed to update stock for product {ProductId}. Status: {Status}, Error: {Error}",
+                        product.Id, response.StatusCode, errorContent);
+                    
+                    // COMPENSATING TRANSACTION: Rollback all successful updates
+                    await RollbackStockUpdatesAsync(httpClient, successfulUpdates);
+                    
+                    return StatusCode((int)response.StatusCode, 
+                        $"Failed to reserve stock for {product.Name}. Transaction rolled back.");
+                }
+            }
+
+            // Step 5: Persist order to database
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            
+            _logger.LogInformation("Order {OrderId} created successfully with {ItemCount} items",
+                order.Id, order.OrderDetails.Count());
+
+            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during order creation. Rolling back stock updates.");
+            
+            // COMPENSATING TRANSACTION: Rollback on any failure
+            await RollbackStockUpdatesAsync(httpClient, successfulUpdates);
+            
+            return StatusCode(500, "Order creation failed. Stock has been rolled back.");
+        }
+    }
+
+    /// <summary>
+    /// Compensating transaction: Rollback stock updates if order creation fails
+    /// </summary>
+    private async Task RollbackStockUpdatesAsync(
+        HttpClient httpClient, 
+        List<(Guid productId, long originalStock)> successfulUpdates)
+    {
+        if (successfulUpdates.Count == 0)
+        {
+            return;
+        }
+
+        _logger.LogWarning("Rolling back {Count} stock updates", successfulUpdates.Count);
+
+        foreach (var (productId, originalStock) in successfulUpdates)
+        {
+            try
+            {
+                var rollbackResponse = await httpClient.PutAsync($"products/{productId}/{originalStock}", null);
+                if (rollbackResponse.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully rolled back stock for product {ProductId} to {Stock}",
+                        productId, originalStock);
+                }
+                else
+                {
+                    _logger.LogError("CRITICAL: Failed to rollback stock for product {ProductId}. Manual intervention required!",
+                        productId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "CRITICAL: Exception during rollback for product {ProductId}. Manual intervention required!",
+                    productId);
+            }
+        }
     }
 
     // DELETE: api/Orders/5
