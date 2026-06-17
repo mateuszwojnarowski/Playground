@@ -423,3 +423,8 @@ fabric.properties
 /WebApiFundamentals/logs
 /WebApiFundamentals/CityInfo.db
 /MicroservicesDemo/.idea/.idea.MicroservicesDemo/.idea
+
+# React101 build artifacts
+React101/**/dist/
+React101/**/coverage/
+React101/**/package-lock.json
