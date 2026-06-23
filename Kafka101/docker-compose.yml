@@ -1,0 +1,213 @@
+# =============================================================================
+# docker-compose.yml - Local Kafka Development Environment
+# =============================================================================
+#
+# This docker-compose file sets up a complete local Kafka environment for
+# the Kafka101 learning project. It includes:
+#   - Apache Zookeeper (required by Kafka for cluster coordination)
+#   - Apache Kafka broker (the message broker)
+#   - Kafka UI (optional - web interface for browsing topics and messages)
+#
+# USAGE:
+#   Start:    docker-compose up -d
+#   Stop:     docker-compose down
+#   Logs:     docker-compose logs -f kafka
+#   Reset:    docker-compose down -v  (removes all data!)
+#
+# ACCESS:
+#   Kafka broker:  localhost:9092
+#   Kafka UI:      http://localhost:8080
+#
+# REQUIREMENTS:
+#   - Docker Desktop (https://www.docker.com/products/docker-desktop/)
+#   - At least 2GB RAM available for Docker
+#
+# ARCHITECTURE:
+#   Your .NET App → localhost:9092 → Kafka Broker (inside Docker network)
+#   Kafka Broker ↔ Zookeeper (internal Docker network on port 2181)
+#
+# NOTE ON KAFKA AND ZOOKEEPER:
+#   Apache Kafka traditionally requires Zookeeper for:
+#   - Storing cluster metadata
+#   - Leader election for partitions
+#   - Consumer group coordination
+#
+#   Kafka 3.0+ introduced KRaft mode (Kafka Raft) that eliminates Zookeeper.
+#   This docker-compose uses the traditional Zookeeper setup for broader
+#   compatibility, but KRaft is the future direction.
+
+version: "3.8"
+
+services:
+  # ===========================================================================
+  # ZOOKEEPER
+  # Kafka's coordination service. Manages broker registration, leader election,
+  # and stores configuration. Required for traditional Kafka deployment.
+  # ===========================================================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: kafka101-zookeeper
+    restart: unless-stopped
+    ports:
+      - "2181:2181"  # ZooKeeper client port
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000    # Basic time unit in ms for ZooKeeper
+      ZOOKEEPER_SYNC_LIMIT: 2      # Max ticks for follower sync
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kafka-network
+
+  # ===========================================================================
+  # KAFKA BROKER
+  # The main message broker. Stores messages, serves producers and consumers.
+  # ===========================================================================
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka101-broker
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      # EXTERNAL port: Used by apps OUTSIDE Docker (your .NET app on the host)
+      - "9092:9092"
+      # JMX port: For monitoring with JConsole or Prometheus JMX exporter
+      - "9997:9997"
+    environment:
+      # BROKER IDENTITY
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+
+      # LISTENERS EXPLAINED:
+      # Kafka supports multiple listeners for different network contexts:
+      #
+      # PLAINTEXT://0.0.0.0:9092
+      #   Binds to all interfaces inside the container on port 9092
+      #
+      # PLAINTEXT_HOST://0.0.0.0:29092
+      #   Alternative listener for external connections (host machine)
+      #
+      # ADVERTISED LISTENERS: What addresses Kafka tells clients to use.
+      # Clients connect to the bootstrap server first, then get redirected
+      # to the "advertised" address for actual communication.
+      #
+      # Two listeners:
+      # 1. PLAINTEXT (for container-to-container within Docker network)
+      # 2. PLAINTEXT_HOST (for host machine - your .NET app)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+
+      # TOPIC DEFAULTS
+      # Auto-create topics when a producer/consumer references them
+      # In production, set this to false and manage topics explicitly
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1  # 1 for single-node; 3+ for production
+      KAFKA_NUM_PARTITIONS: 3              # Default partitions for auto-created topics
+
+      # RETENTION SETTINGS
+      # How long messages are kept (time-based retention)
+      KAFKA_LOG_RETENTION_HOURS: 168      # 7 days (default)
+      # Maximum log size before oldest segments are deleted
+      KAFKA_LOG_RETENTION_BYTES: -1       # -1 = unlimited (time-based only)
+      # Log segment size (creates new segment file when this size is reached)
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824 # 1GB
+
+      # PERFORMANCE TUNING
+      KAFKA_LOG_FLUSH_INTERVAL_MESSAGES: 10000  # Flush to disk every 10K messages
+      KAFKA_LOG_FLUSH_INTERVAL_MS: 1000         # Or every 1 second
+      KAFKA_NUM_NETWORK_THREADS: 3
+      KAFKA_NUM_IO_THREADS: 8
+
+      # TRANSACTION SUPPORT (required for Advanced/TransactionalProducer.cs)
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      # OFFSET TOPIC (stores consumer group offsets)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS: 1
+
+      # GROUP COORDINATOR (manages consumer group rebalancing)
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0  # 0 for dev; 3000 for production
+
+      # JMX MONITORING (optional - connects to port 9997)
+      KAFKA_JMX_PORT: 9997
+      KAFKA_JMX_HOSTNAME: localhost
+
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "kafka-broker-api-versions",
+          "--bootstrap-server",
+          "localhost:9092",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - kafka-network
+
+  # ===========================================================================
+  # KAFKA UI
+  # Optional web interface for exploring topics, messages, and consumer groups.
+  # Access at: http://localhost:8080
+  #
+  # Features:
+  # - Browse topics and messages
+  # - View consumer group lag
+  # - Create/delete topics
+  # - Publish test messages
+  # ===========================================================================
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka101-ui
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka101-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:29092"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+      # Show demo topics by default
+      KAFKA_CLUSTERS_0_READONLY: "false"
+      # Optional: Enable schema registry integration
+      # KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
+    networks:
+      - kafka-network
+
+# =============================================================================
+# NAMED VOLUMES
+# Using named volumes ensures data persists between container restarts.
+# Run `docker-compose down -v` to delete all data and start fresh.
+# =============================================================================
+volumes:
+  zookeeper-data:
+    driver: local
+  zookeeper-log:
+    driver: local
+  kafka-data:
+    driver: local
+
+# =============================================================================
+# NETWORKS
+# Containers communicate over an isolated Docker network.
+# Your host machine accesses Kafka via the exposed port 9092.
+# =============================================================================
+networks:
+  kafka-network:
+    driver: bridge
